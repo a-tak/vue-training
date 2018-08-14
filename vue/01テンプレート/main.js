@@ -1,3 +1,3 @@
-var app = new IDBCursorWithValue({
+var app = new Vue({
     el: '#app'
 })
