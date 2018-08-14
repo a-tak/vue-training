@@ -8,7 +8,9 @@
     <body>
         <div id="app">
             <p>{{ message}}</p>
+            <p>{{ count }}</p>
             <input v-model="message">
+            <input v-model.number="count">
         </div>
         <script src="http://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
         <script src="main.js"></script>
