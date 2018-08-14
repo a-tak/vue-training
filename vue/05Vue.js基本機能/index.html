@@ -7,7 +7,10 @@
     </head>
     <body>
         <div id="app">
-            <p v-if="show">Hello</p>
+            <button v-on:click="Show=! show">切り替え</button>
+            <<transition>
+            <p v-if="show">Hello Vue!!!!!</p>
+            </transition>
         </div>
         <script src="http://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
         <script src="main.js"></script>
