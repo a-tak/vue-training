@@ -7,10 +7,10 @@
     </head>
     <body>
         <div id="app">
-            <button v-on:click="show=! show">切り替え</button>
-            <transition>
-            <p v-if="show">Hello Vue!!!!!</p>
-            </transition>
+            <p>{{ message.value }}</p>
+            <p>{{ message.value.length}}</p>
+            <p>{{ list[2] }}</p>
+            <p>{{ list[num] }}</p>
         </div>
         <script src="http://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
         <script src="main.js"></script>
