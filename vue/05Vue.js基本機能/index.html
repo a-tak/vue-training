@@ -7,8 +7,8 @@
     </head>
     <body>
         <div id="app">
-            <p>{{ count }} 回クリックしたよ!!!</p>
-            <button v-on:click="increment">カウントをふやしたる!</button>
+        <p v-bind:class="{ child: isChild, 'is-active': isActice }">Texttttt</p>
+        <p v-bind:style="{ color: textColor, backgroundColor: bgColor }">Textttxttxt</p>
         </div>
         <script src="http://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
         <script src="main.js"></script>
