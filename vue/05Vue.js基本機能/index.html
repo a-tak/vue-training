@@ -7,8 +7,13 @@
     </head>
     <body>
         <div id="app">
-            <div v-if="ok">v-ifで表示</div>
-            <div v-show="ok">v-showで表示</div>
+            <div v-if="type === 'A'">TypeはA!!</div>
+            <div v-else-if="type === 'B'">
+                typeはB!!!
+            </div>
+            <div v-else>
+                どれでもないよ
+            </div>
             <pre>{{ $data }}</pre>
         </div>
         <script src="http://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
