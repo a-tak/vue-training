@@ -28,6 +28,12 @@ new Vue({
                 name: this.name,
                 hp: 500
             })
+        },
+        doRemove: function(index) {
+            //spliceは配列の要素を消しつつ、新しい要素を追加するものらしい。
+            //removeとかじゃいかんのかよ。ややこしいな。
+            // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+            this.list.splice(index,1)
         }
     }
 })
