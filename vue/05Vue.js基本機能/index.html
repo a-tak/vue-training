@@ -7,14 +7,12 @@
     </head>
     <body>
         <div id="app">
-            <!-- v-bind:classにより条件によってtyuyoiクラスを追加している
-            ついでにspanをv-ifで制御してつよい!と表示もやっている -->
+            <!-- v-if:により条件に合うものだけ表示 -->
             <ul>
                 <li v-for="item in list"
                     v-bind:key="item.id"
-                    v-bind:class="{ tuyoi: item.hp > 300 }">
+                    v-if="item.hp > 300">
                     ID.{{item.id}} {{ item.name }} HP.{{ item.hp}}
-                    <span v-if="item.hp > 300">つよい!</span>
                 </li>
             <pre>{{ $data }}</pre>
         </div>
