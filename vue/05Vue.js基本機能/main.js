@@ -34,6 +34,10 @@ new Vue({
             //removeとかじゃいかんのかよ。ややこしいな。
             // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
             this.list.splice(index,1)
+        },
+        doAttack: function(index) {
+            this.list[index].hp -= 10
+            
         }
     }
 })
