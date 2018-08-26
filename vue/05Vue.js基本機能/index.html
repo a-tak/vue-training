@@ -7,7 +7,7 @@
     </head>
     <body>
         <div id="app">
-            <!--inputタグの各種イベントはvue.jsのライブラリで拾っている。これで双方向バインドとかいろいろやってるのね。たぶん。 -->
+            <!--inputタグの各種イベントはvue.jsのライブラリで拾っている。これで双方向バインドとかいろいろやってるのね。たぶん。 onCompositionEndとかよくわからんのが呼ばれているのはaddEventListenerでchangeイベントと紐付けているからっぽい。 -->
             名前 <input v-model="name">
             <button v-on:click="doAdd">モンスターを追加</button>
             <ul>
