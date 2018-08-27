@@ -37,7 +37,7 @@ new Vue({
         },
         doAttack: function(index) {
             this.list[index].hp -= 10
-            
+            if (this.list[index].hp <= 0) this.doRemove(index);
         }
     }
 })
