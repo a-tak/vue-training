@@ -7,17 +7,9 @@
     </head>
     <body>
         <div id="app">
-            <!--inputタグの各種イベントはvue.jsのライブラリで拾っている。これで双方向バインドとかいろいろやってるのね。たぶん。 onCompositionEndとかよくわからんのが呼ばれているのはaddEventListenerでchangeイベントと紐付けているからっぽい。 -->
-            名前 <input v-model="name">
-            <button v-on:click="doAdd">モンスターを追加</button>
-            <ul>
-                <li v-for="(item,index) in list"
-                    v-bind:key="item.id">
-                    ID.{{item.id}} {{ item.name }} HP.{{ item.hp}}
-                    <span v-if="item.hp < 50">やられそう!</span>
-                    <button v-on:click="doRemove(index)">モンスターを削除</button>
-                    <button v-on:click="doAttack(index)">攻撃する</button>
-                </li>
+            <li v-for="(item, index) in list" v-bind:key="item.id">
+                ID.{{ item.id}} {{ item.name }} HP.{{ item.hp}}
+            </li>
             <pre>{{ $data }}</pre>
         </div>
         <script src="http://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
