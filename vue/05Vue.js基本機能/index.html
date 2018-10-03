@@ -7,9 +7,7 @@
     </head>
     <body>
         <div id="app">
-            <li v-for="(item, index) in list" v-bind:key="item.id">
-                ID.{{ item.id}} {{ item.name }} HP.{{ item.hp}}
-            </li>
+            <p ref="hello">Hello</p>
             <pre>{{ $data }}</pre>
         </div>
         <script src="http://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
