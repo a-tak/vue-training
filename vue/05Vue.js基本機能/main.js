@@ -1,6 +1,8 @@
-new Vue({
+var app = new Vue({
     el: '#app',
-    mounted: function() {
-        console.log(this.$refs.hello)
+    data: {
+        message : {
+            value: "Heello"
+        }
     }
 })
