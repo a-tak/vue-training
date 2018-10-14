@@ -1,5 +1,6 @@
 Vue.component('comp-child', {
     template: '<li>{{ name }} HP. {{ hp }}</li>',
+    // propsには型などの制約も入れられるので積極的に指定すべき
     props: ['name', 'hp']
 })
 var app = new Vue({
