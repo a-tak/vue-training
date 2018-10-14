@@ -1,4 +1,7 @@
-/* 勝手にenterやleaveという名前のcssが適用される */
+/* 勝手にenterやleaveという名前のcssが適用される。
+enterクラスが適用されトランジションが終わるとenter-toが適用される。
+消えるときも同様
+ */
 .v-enter-active, .v-leave-active {
     transition: opacity 1s;
 }
