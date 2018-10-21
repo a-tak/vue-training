@@ -9,6 +9,14 @@
 import HelloWorld from './components/HelloWorld'
 
 export default {
+  created() {
+    //storeのカウントを取ってくる
+    console.log(this.$store.state.count)
+    //+1増分
+    this.$store.commit('increment')
+    //再度表示。1になってる
+    console.log(this.$store.state.count)
+  },
   name: 'App',
   components: {
     HelloWorld
