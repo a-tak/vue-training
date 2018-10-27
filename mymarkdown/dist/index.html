@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>俺のマークダウン</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">  
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyA94oovqbFPrXWWfeoUwZbJX65JfSiYh7c",
+        authDomain: "a-tak-test.firebaseapp.com",
+        databaseURL: "https://a-tak-test.firebaseio.com",
+        projectId: "a-tak-test",
+        storageBucket: "a-tak-test.appspot.com",
+        messagingSenderId: "190278648588"
+      };
+      firebase.initializeApp(config);
+    </script>
+    <script src="./build.js"></script>
+  </body>
+</html>
