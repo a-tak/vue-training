@@ -2,7 +2,7 @@
   <div id="app">
     <Home v-if="!isLogin"></Home>
     <Editor v-if="isLogin" :user="userData"></Editor>
-    <router-link :to="{ name: 'terms' }">利用規約</router-link>
+    <router-link :to="{ name: 'terms' }" class="body-1">利用規約</router-link>
   </div>
 </template>
 

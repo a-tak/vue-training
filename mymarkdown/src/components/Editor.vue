@@ -1,21 +1,32 @@
 <template>
-    <v-app>
+    <v-app dark>
         <v-content>
             <div class="editor">
-                <h1>エディター画面</h1>
-                <span>{{ user.displayName }}</span>
+                <h1 class="title">エディター画面</h1>
+                <span class="subheading">{{ user.displayName }}</span>
                 <v-btn @click="logout">ログアウト</v-btn>
                 <div class="editorWrapper">
-                    <div class="memoListWrapper">
-                        <div class="memoList" v-for="(memo, index) in memos" :key="index" @click="selectMemo(index)" :data-selected="index == selectedIndex">
-                            <p class="memoTitle">{{ displayTitle(memo.markdown) }}</p>
-                        </div>
-                        <v-btn @click="addMemo">メモの追加</v-btn>
-                        <v-btn v-if="memos.length > 1" @click="deleteMemo">選択中のメモを削除</v-btn>
+                    <v-card>
+                        <v-list>
+                            <v-list-tile v-for="(memo, index) in memos" :key="index" @click="selectMemo(index)" :data-selected="index == selectedIndex">
+                                <v-list-tile-action>
+                                    <v-icon v-if="index == selectedIndex" color="pink">star</v-icon>
+                                </v-list-tile-action>
+                                <v-list-tile-content>
+                                    <p class="memoTitle">{{ displayTitle(memo.markdown) }}</p>
+                                </v-list-tile-content>
+                            </v-list-tile>
+                        </v-list>
+                        <v-btn class="addMemoBtn" @click="addMemo">メモの追加</v-btn>
+                        <v-btn class="deleteMemoBtn" v-if="memos.length > 1" @click="deleteMemo">選択中のメモを削除</v-btn>
                         <v-btn  @click="saveMemos">メモ保存</v-btn>
-                    </div>
-                    <textarea class="markdown" v-model="memos[selectedIndex].markdown"></textarea>
-                    <div class="preview markdown-body" v-html="preview()"></div>
+                    </v-card>
+                    <v-card class="markdown">
+                        <v-textarea v-model="memos[selectedIndex].markdown"></v-textarea>
+                    </v-card>
+                    <v-card class="preview markdown-body">
+                        <div v-html="preview()"></div>
+                    </v-card>
                 </div>
             </div>
         </v-content>
