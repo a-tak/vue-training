@@ -1,21 +1,25 @@
 <template>
-    <div class="editor">
-        <h1>エディター画面</h1>
-        <span>{{ user.displayName }}</span>
-        <button @click="logout">ログアウト</button>
-        <div class="editorWrapper">
-            <div class="memoListWrapper">
-                <div class="memoList" v-for="(memo, index) in memos" :key="index" @click="selectMemo(index)" :data-selected="index == selectedIndex">
-                    <p class="memoTitle">{{ displayTitle(memo.markdown) }}</p>
+    <v-app>
+        <v-content>
+            <div class="editor">
+                <h1>エディター画面</h1>
+                <span>{{ user.displayName }}</span>
+                <v-btn @click="logout">ログアウト</v-btn>
+                <div class="editorWrapper">
+                    <div class="memoListWrapper">
+                        <div class="memoList" v-for="(memo, index) in memos" :key="index" @click="selectMemo(index)" :data-selected="index == selectedIndex">
+                            <p class="memoTitle">{{ displayTitle(memo.markdown) }}</p>
+                        </div>
+                        <v-btn @click="addMemo">メモの追加</v-btn>
+                        <v-btn v-if="memos.length > 1" @click="deleteMemo">選択中のメモを削除</v-btn>
+                        <v-btn  @click="saveMemos">メモ保存</v-btn>
+                    </div>
+                    <textarea class="markdown" v-model="memos[selectedIndex].markdown"></textarea>
+                    <div class="preview markdown-body" v-html="preview()"></div>
                 </div>
-                <button class="addMemoBtn" @click="addMemo">メモの追加</button>
-                <button class="deleteMemoBtn" v-if="memos.length > 1" @click="deleteMemo">選択中のメモを削除</button> 
-                <button class="saveMemosBtn" @click="saveMemos">メモ保存</button>
             </div>
-            <textarea class="markdown" v-model="memos[selectedIndex].markdown"></textarea>
-            <div class="preview markdown-body" v-html="preview()"></div>
-        </div>
-    </div>
+        </v-content>
+    </v-app>
 </template>
 
 <script>
