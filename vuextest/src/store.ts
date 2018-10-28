@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     count: 0,
-    username : ""
+    username : "",
+    message: "初期メッセージ"
   },
   mutations: {
     //デフォでstateやpayload(commitの時の引数)が渡されるらしい
@@ -18,6 +19,9 @@ export default new Vuex.Store({
     },
     setName(state, payload) {
         state.username = payload
+    },
+    setMessage(state, payload) {
+        state.message = payload.message
     }
   },
   actions: {
@@ -26,6 +30,9 @@ export default new Vuex.Store({
         let newname : string = payload;
         newname = '*' + newname;
         commit('setName',newname)
+    },
+    doUpdateMessage( { commit }, message) {
+        commit("setMessage", { message })
     }
   },
   getters: {
@@ -35,6 +42,9 @@ export default new Vuex.Store({
       },
       username(state) {
           return state.username;
+      },
+      message(state) {
+          return state.message;
       }
   }
 })
