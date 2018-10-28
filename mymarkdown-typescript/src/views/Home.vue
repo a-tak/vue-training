@@ -2,17 +2,20 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
     <Login v-if="!isLogin"></Login>
+    <Editor v-if="isLogin" :user="userData"></Editor>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Login from "@/components/Login.vue"
+import Editor from "@/components/Editor.vue"
 import firebase from "firebase"
 
 @Component({
   components: {
     Login,
+    Editor
   },
 })
 export default class Home extends Vue {
