@@ -1,3 +1,4 @@
 .vscode/settings.json
 taskmanager.code-workspace
 mymarkdown/.firebase/*.cache
+taskclear-proto/.firebase/*.cache
