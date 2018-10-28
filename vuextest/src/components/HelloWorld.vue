@@ -7,7 +7,7 @@
       <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
     </p>
     <v-card>
-      <v-text-field class="textbox" @input="doUpdate" single-line box>ここに値を</v-text-field>
+      <v-text-field class="textbox" v-model="message" single-line box>ここに値を</v-text-field>
     </v-card>
     
   </div>
@@ -22,17 +22,13 @@ export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
 
   get message(): string {
-    return "";
+    console.log("get msg=" + store.getters.message);
+    return store.getters.message;
   }
   set message(msg: string) {
-
+    store.dispatch('doUpdateMessage', msg);
+    console.log("set msg=" + store.getters.message)
   }
-
-  doUpdate(text: string): void {
-      store.dispatch('doUpdateMessage', text);
-      console.log("msg=" + store.getters.message);
-  }
-
 }
 </script>
 
