@@ -1,18 +1,36 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <Login v-if="!isLogin"></Login>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import Login from "@/components/Login.vue"
+import firebase from "firebase"
 
 @Component({
   components: {
-    HelloWorld,
+    Login,
   },
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  isLogin: boolean = false;
+  //anyかnullが入る定義。firebaseのカーソルオーバーして定義確認した。
+  userData: any | null = null;
+
+  created () {
+    firebase.auth().onAuthStateChanged(user => {
+    console.log(user);
+    if (user) {
+      this.isLogin = true;
+      this.userData = user;
+    }else{
+      this.isLogin = false;
+      this.userData = null;
+    };
+  });
+  }
+}
 </script>
