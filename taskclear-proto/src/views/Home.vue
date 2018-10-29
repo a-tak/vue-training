@@ -1,18 +1,20 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
+  <div id="Home">
     <Login v-if="!isLogin"></Login>
+    <TaskList v-if="isLogin"></TaskList>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Login from "@/components/Login.vue"
+import TaskList from "@/components/TaskList.vue"
 import firebase from "firebase"
 
 @Component({
   components: {
     Login,
+    TaskList
   },
 })
 export default class Home extends Vue {

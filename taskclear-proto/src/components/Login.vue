@@ -1,25 +1,22 @@
 <template>
     <div id="home">
-        <h1 class="title">{{ msg }}</h1>
-        <v-btn @click="googleLogin">Googleアカウントでログイン</v-btn>
+        <h1 class="title">{{ value }}</h1>
+        <v-btn @click="googleLogin()">Googleアカウントでログイン</v-btn>
     </div>
 </template>
-<script>
-import firebase from "firebase"
 
-export default {
-    name: "home",
-    data() {
-        return {
-            msg: "Welcome to MyMarkdown"
-        };
-    },
-    methods: {
-        googleLogin: function() {
-            firebase
-                .auth()
-                .signInWithRedirect(new firebase.auth.GoogleAuthProvider());
-        }
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import firebase from "firebase";
+
+export default class Login extends Vue {
+
+    value: string = "Welcome to MyMarkdown";
+
+    googleLogin(): void {
+        firebase
+            .auth()
+            .signInWithRedirect(new firebase.auth.GoogleAuthProvider());
     }
 };
 </script>
