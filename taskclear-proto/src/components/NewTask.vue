@@ -1,8 +1,10 @@
 <template>
     <div id="newtask" class="newtaskwrapper">
-        <v-card>
+      <v-layout align-center justify-center row fill-height>
+        <v-card class="ma-2">
           <v-text-field class="newtaskfield"></v-text-field><v-btn class="addButton">追加</v-btn>
         </v-card>
+      </v-layout>
     </div>
 </template>
 
@@ -16,14 +18,12 @@ export default class NewTask extends Vue {
 
 <style>
 .newtaskwrapper {
-  display: flex;
+  
 }
 .newtaskfield {
-  width: 50%;
-  text-align: left;
+  width: 80%;
 }
 .addButton {
-  text-align: right;
 }
 </style>
 
