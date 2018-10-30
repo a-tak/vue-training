@@ -1,12 +1,12 @@
 <template>
     <div id="tasklist">
         <v-content>
-            <h1 class="title">タスクリスト</h1>
+            <v-btn @click="logout">ログアウト</v-btn>
             <NewTask></NewTask>
         </v-content>
     </div>
 </template>
-<script>
+<script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import firebase from "firebase"
 import NewTask from "@/components/NewTask.vue"
@@ -18,5 +18,8 @@ import NewTask from "@/components/NewTask.vue"
 })
 
 export default class TaskList extends Vue {
-};
+    logout() : void {
+        firebase.auth().signOut();
+    }
+}
 </script>
