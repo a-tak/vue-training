@@ -21,7 +21,7 @@ export default class Home extends Vue {
     isLogin: boolean = false;
   userData: firebase.User | null = null;
 
-  created () {
+  created () : void {
     firebase.auth().onAuthStateChanged(user => {
     console.log(user);
     if (user) {
