@@ -10,7 +10,7 @@
             <v-flex xs12 sm6 offset-sm1>
                 <v-card>
                     <v-list>
-                        <v-list-tile v-for="item in items" :key="item.title" @click="">
+                        <v-list-tile v-for="item in $store.tasks" :key="item.id" @click="">
                             <v-list-tile-content>
                                 <v-list-tile-title v-html="item.title"></v-list-tile-title>
                             </v-list-tile-content>
@@ -33,9 +33,6 @@ import NewTask from "@/components/NewTask.vue"
 })
 
 export default class TaskList extends Vue {
-
-    items = [{title:"テスト"},
-    {title:"テスト2"}];
 
     logout() : void {
         firebase.auth().signOut();
