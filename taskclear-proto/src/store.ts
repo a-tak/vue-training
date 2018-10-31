@@ -5,10 +5,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tasks: []
+    tasks:[]
   },
   mutations: {
-    addTask(state, task) {
+    addTask(state, task:string) {
+      //なぜかビルドはエラーになるが動いている。配列に追加するにはどうすれば良いか?
       state.tasks.push(task);
       console.log(state.tasks);
     }
