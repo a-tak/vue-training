@@ -1,6 +1,12 @@
 <template>
     <div id="home">
-        <v-btn @click="googleLogin">Googleアカウントでログイン</v-btn>
+        <v-container>
+            <v-layout align-center justify-center row fill-height>
+                <v-flex>
+                    <v-btn @click="googleLogin">Googleアカウントでログイン</v-btn>
+                </v-flex>
+            </v-layout>
+        </v-container>
     </div>
 </template>
 

@@ -1,9 +1,24 @@
 <template>
     <div id="tasklist">
-        <v-content>
-            <v-btn @click="logout">ログアウト</v-btn>
-            <NewTask></NewTask>
-        </v-content>
+        <v-layout>
+            <v-flex>
+                <v-btn @click="logout">ログアウト</v-btn>
+                <NewTask></NewTask>
+            </v-flex>
+        </v-layout>
+        <v-layout row>
+            <v-flex xs12 sm6 offset-sm1>
+                <v-card>
+                    <v-list>
+                        <v-list-tile v-for="item in items" :key="item.title" @click="">
+                            <v-list-tile-content>
+                                <v-list-tile-title v-html="item.title"></v-list-tile-title>
+                            </v-list-tile-content>
+                        </v-list-tile>
+                    </v-list>
+                </v-card>
+            </v-flex>
+        </v-layout>   
     </div>
 </template>
 <script lang="ts">
@@ -18,6 +33,10 @@ import NewTask from "@/components/NewTask.vue"
 })
 
 export default class TaskList extends Vue {
+
+    items = [{title:"テスト"},
+    {title:"テスト2"}];
+
     logout() : void {
         firebase.auth().signOut();
     }
