@@ -5,7 +5,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    tasks:[]
+    tasks:[
+      {id: '', title: ''},
+    ]
   },
   getters: {
     tasks(state) { return state.tasks }
