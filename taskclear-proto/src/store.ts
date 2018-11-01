@@ -7,9 +7,11 @@ export default new Vuex.Store({
   state: {
     tasks:[]
   },
+  getters: {
+    tasks(state) { return state.tasks }
+  },
   mutations: {
-    addTask(state, task:string) {
-      //なぜかビルドはエラーになるが動いている。配列に追加するにはどうすれば良いか?
+    addTask(state, task) {
       state.tasks.push(task);
       console.log(state.tasks);
     }

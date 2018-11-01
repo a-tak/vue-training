@@ -22,7 +22,7 @@ export default class NewTask extends Vue {
   inputvalue: string = "";
 
   addTask() : void {
-    this.$store.commit("addTask", this.inputvalue);
+    this.$store.commit("addTask", {id: '1', title: this.inputvalue});
     this.inputvalue="";
   }
 };
