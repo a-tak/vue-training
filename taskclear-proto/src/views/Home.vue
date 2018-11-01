@@ -25,10 +25,13 @@ export default class Home extends Vue {
     firebase.auth().onAuthStateChanged(user => {
     console.log(user);
     if (user) {
+      console.log("Login!");
       this.isLogin = true;
+      this.$store.commit("setUser",user);
       this.userData = user;
     }else{
       this.isLogin = false;
+      this.$store.commit("setUser",null);
       this.userData = null;
     };
   });
