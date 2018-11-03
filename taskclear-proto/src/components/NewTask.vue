@@ -25,8 +25,11 @@ export default class NewTask extends Vue {
 
   addTask() : void {
     if (this.inputvalue.trim()!="") {
-      this.$store.commit("addTask", {id: uuid(), title: this.inputvalue});
-      this.inputvalue="";
+      //ここがタスクの追加部分
+      this.$store.commit("addTask",
+         {id: uuid(), date: this.$store.getters.targetDate,  title: this.inputvalue});
+
+      this.inputvalue = "";
 
       firebase.firestore().collection("tasks").doc(this.$store.getters.user.uid).set({ tasks: this.$store.getters.tasks });
 
