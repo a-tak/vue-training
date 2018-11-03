@@ -36,7 +36,7 @@ export default class TaskList extends Vue {
 
     tasksArray: { id: string, title: string} = {id: "", title: ""};
 
-    creaeted() : void {
+    created() : void {
         firebase
         .firestore()
         .collection("tasks")
@@ -46,6 +46,9 @@ export default class TaskList extends Vue {
             if (doc.exists && doc.data()!.tasks ) {
                 //どうしても!で無視しないと通らなかった。手前でundefinedチェックしても駄目。
                 this.$store.commit("setTasks", doc.data()!.tasks);
+                console.log("tasks=" + doc.data()!.tasks);
+            }else{
+                console.log("tasks not found");
             }
         });
     }

@@ -21,7 +21,7 @@ export default new Vuex.Store({
       state.tasks.push(task);
       console.log(state.tasks);
     },
-    setTask(state, tasks) {
+    setTasks(state, tasks) {
       state.tasks = tasks;
     },
     setUser(state, user) {
