@@ -7,8 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     tasks:[
-      //これをいれないとエラーになるのはなぜ?
-      {id: '', title: ''},
+      //{}でキーみたいなのを設定しているのはオブジェクトリテラルというもの。JSONも同じだな。
+      {},
     ],
     user: null,
   },
