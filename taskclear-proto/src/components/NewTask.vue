@@ -26,8 +26,11 @@ export default class NewTask extends Vue {
   addTask() : void {
     if (this.inputvalue.trim()!="") {
       //ここがタスクの追加部分
+      const d: Date = this.$store.getters.targetDate;
+      // 一旦時間は0:00でセット。セクションを取り入れるときはここの時間をセクションの時間に変更する
+      const date = new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0,0);
       this.$store.commit("addTask",
-         {id: uuid(), date: this.$store.getters.targetDate,  title: this.inputvalue});
+         {id: uuid(), date: date,  title: this.inputvalue});
 
       this.inputvalue = "";
 
