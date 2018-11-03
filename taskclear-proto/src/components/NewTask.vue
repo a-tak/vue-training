@@ -3,7 +3,7 @@
       <v-card>
         <v-layout row wrap fill-height align-center justify-center>
             <v-flex class="ma-2">
-                <v-text-field placeholder="新しいタスクを追加" outline v-model="inputvalue"></v-text-field>
+                <v-text-field placeholder="新しいタスクを追加" outline v-model="inputvalue" clearable v-on:keyup.enter="addTask"></v-text-field>
             </v-flex>
             <v-flex>
                 <v-btn @click="addTask">追加</v-btn>
@@ -32,7 +32,7 @@ export default class NewTask extends Vue {
     }
   }
 
-  
+
 };
 </script>
 
