@@ -37,18 +37,17 @@ export default class TaskList extends Vue {
     tasksArray: { id: string, title: string} = {id: "", title: ""};
 
     creaeted() : void {
-        // firebase
-        //     .firestore()
-        //     .collection("tasks")
-        //     .doc(this.$store.getters.user.uid)
-        //     .get()
-        //     .then(doc => {
-        //ここでdocがObject is possibly 'undefined'. となる
-        //         if (doc.exists && doc.data().tasks) {
-        //             this.$store.commit("setTasks", doc.data().tasks);
-        //         }
-        //     });
-
+        firebase
+        .firestore()
+        .collection("tasks")
+        .doc(this.$store.getters.user.uid)
+        .get()
+        .then(doc => {
+            if (doc.exists && doc.data()!.tasks ) {
+                //どうしても!で無視しないと通らなかった。手前でundefinedチェックしても駄目。
+                this.$store.commit("setTasks", doc.data()!.tasks);
+            }
+        });
     }
 
     logout() : void {
