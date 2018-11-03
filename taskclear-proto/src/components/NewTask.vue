@@ -15,7 +15,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import firebase from "firebase";
+import firebase from 'firebase';
+import uuid from 'uuid';
 
 @Component
 export default class NewTask extends Vue {
@@ -24,7 +25,7 @@ export default class NewTask extends Vue {
 
   addTask() : void {
     if (this.inputvalue.trim()!="") {
-      this.$store.commit("addTask", {id: '1', title: this.inputvalue});
+      this.$store.commit("addTask", {id: uuid(), title: this.inputvalue});
       this.inputvalue="";
 
       firebase.firestore().collection("tasks").doc(this.$store.getters.user.uid).set({ tasks: this.$store.getters.tasks });
