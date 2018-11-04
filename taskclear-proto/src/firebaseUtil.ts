@@ -1,8 +1,9 @@
 import util from "./util";
 import firebase from "firebase"
+import Task from "./task";
 
 export default class firebaseUtil {
-    static saveTasks(uid: string, date: Date, tasks: []) : void {
+    static saveTasks(uid: string, date: Date, tasks: Task[]) : void {
         // 一旦時間は0:00でセット。セクションを取り入れるときはここの時間をセクションの時間に変更する
         const d = new Date(date.getFullYear(),date.getMonth(),date.getDate(),0,0,0,0);
         

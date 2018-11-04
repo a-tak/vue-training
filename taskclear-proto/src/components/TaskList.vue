@@ -36,6 +36,14 @@
                 <v-card>
                     <v-list>
                         <v-list-tile v-for="(item, index) in tasks" :key="item.id" @click="">
+                            <v-list-tile-action>
+                                <v-btn icon ripple @click="startTask(item)" v-if="item.doing === false">
+                                    <v-icon color="purple">play_circle_filled</v-icon>
+                                </v-btn>
+                                <v-btn icon ripple @click="stopTask(item)" v-if="item.doing === true">
+                                    <v-icon color="purple">pause_circle_filled</v-icon>
+                                </v-btn>
+                            </v-list-tile-action>
                             <v-list-tile-content>
                                 <v-list-tile-title v-html="item.title">
                                 </v-list-tile-title>
@@ -58,6 +66,7 @@ import firebase from "firebase"
 import NewTask from "@/components/NewTask.vue"
 import util from "../util";
 import fb from "../firebaseUtil";
+import Task from "../task";
 
 @Component({
   components: {
@@ -118,6 +127,14 @@ export default class TaskList extends Vue {
     deleteTask(index: number) : void {
         this.$store.commit("deleteTask",index);
         fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
+    }
+
+    startTask(item: Task) : void {
+        item.isDoing = true;
+    }
+
+    stopTask(item: {}) : void {
+
     }
 
     created() : void {
