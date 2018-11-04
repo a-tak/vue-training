@@ -26,6 +26,9 @@ export default new Vuex.Store({
       state.tasks.push(task);
       console.log(state.tasks);
     },
+    deleteTask(state, index: number) {
+      state.tasks.splice(index,1);
+    },
     setTasks(state, tasks:[]) {
       state.tasks = tasks;
     },
