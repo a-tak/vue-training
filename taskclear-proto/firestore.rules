@@ -6,5 +6,8 @@ service cloud.firestore {
     match /tasks/{user_id} {
       allow read, write: if request.auth.uid == user_id;
     }
+    match /users/{user_id}/date/{date} {
+      allow read, write: if request.auth.uid == user_id;
+    }
   }
 }

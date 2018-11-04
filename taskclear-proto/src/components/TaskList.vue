@@ -19,7 +19,7 @@
                     prepend-icon="event"
                     readonly
                     ></v-text-field>
-                    <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp"></v-date-picker>
+                    <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" ></v-date-picker>
                 </v-menu>
                 </v-flex>
             <v-flex>
@@ -47,9 +47,10 @@
     </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import firebase from "firebase"
 import NewTask from "@/components/NewTask.vue"
+import util from "../util";
 
 @Component({
   components: {
@@ -81,12 +82,19 @@ export default class TaskList extends Vue {
         this.menu2_ = value;
     }
 
-    created() : void {
+    @Watch("targetDate")
+    onValueChange(newValue: string,oldValue: string): void {
+        this.getTasks();
+    }
+
+    getTasks() : void {
+        console.log("getTasks start!");
         firebase
         .firestore()
-        .collection("tasks")
-//        .where("date","==",this.$store.getters.targetDate)
+        .collection("users")
         .doc(this.$store.getters.user.uid)
+        .collection("date")
+        .doc(util.getDateString(this.$store.getters.targetDate))
         .get()
         .then(doc => {
             if (doc.exists && doc.data()!.tasks ) {
@@ -95,8 +103,13 @@ export default class TaskList extends Vue {
                 console.log("tasks=" + doc.data()!.tasks);
             }else{
                 console.log("tasks not found");
+                this.$store.commit("setTasks",null);
             }
         });
+    }
+
+    created() : void {
+        this.getTasks();
     }
 
     logout() : void {

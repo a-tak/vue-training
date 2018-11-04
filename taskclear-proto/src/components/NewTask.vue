@@ -17,6 +17,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import firebase from 'firebase';
 import uuid from 'uuid';
+import util from '../util';
 
 @Component
 export default class NewTask extends Vue {
@@ -37,8 +38,8 @@ export default class NewTask extends Vue {
     const date = new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0,0);
     this.$store.commit("addTask",
         {id: uuid(), date: date,  title: this.inputvalue});
-
-    firebase.firestore().collection("tasks").doc(this.$store.getters.user.uid).set({ tasks: this.$store.getters.tasks });
+    firebase.firestore().collection("users").doc(this.$store.getters.user.uid)
+      .collection("date").doc(util.getDateString(date)).set({ tasks: this.$store.getters.tasks });
 
     this.inputvalue = "";
     this.canSubmit = false;
