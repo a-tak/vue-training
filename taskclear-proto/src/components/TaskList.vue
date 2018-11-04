@@ -103,7 +103,7 @@ export default class TaskList extends Vue {
                 console.log("tasks=" + doc.data()!.tasks);
             }else{
                 console.log("tasks not found");
-                this.$store.commit("setTasks",null);
+                this.$store.commit("setTasks",[]);
             }
         });
     }
