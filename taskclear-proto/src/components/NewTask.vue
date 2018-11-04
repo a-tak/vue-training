@@ -19,7 +19,7 @@ import firebase from 'firebase';
 import uuid from 'uuid';
 import util from '../util';
 import fb from '../firebaseUtil';
-import Task from '../task';
+import ITask from '../ITask';
 
 @Component
 export default class NewTask extends Vue {
@@ -38,13 +38,9 @@ export default class NewTask extends Vue {
     const d: Date = this.$store.getters.targetDate;
     // 一旦時間は0:00でセット。セクションを取り入れるときはここの時間をセクションの時間に変更する
     const date = new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0,0);
-    let task = new Task();
-    task.id = uuid();
-    task.date = date;
-    task.title = this.inputvalue;
-    task.isDoing = false;
-
-    this.$store.commit("addTask",task);
+    let task:ITask = {id: uuid(), date: date,  title: this.inputvalue, isDoing:false, startTime:null, endTime:null};
+    this.$store.commit("addTask",
+        task);
 
     fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
 

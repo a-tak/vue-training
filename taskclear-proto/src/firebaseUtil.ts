@@ -1,6 +1,6 @@
 import util from "./util";
 import firebase from "firebase"
-import Task from "./task";
+import Task from "./ITask";
 
 export default class firebaseUtil {
     static saveTasks(uid: string, date: Date, tasks: Task[]) : void {

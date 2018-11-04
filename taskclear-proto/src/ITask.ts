@@ -3,5 +3,6 @@ export default interface ITask {
     date: Date;
     title: string;
     isDoing: boolean;
-
+    startTime: Date | null;
+    endTime: Date | null;
 }
