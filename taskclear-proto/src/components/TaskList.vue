@@ -26,15 +26,15 @@
                 <v-btn @click="logout">ログアウト</v-btn>
             </v-flex>
         </v-layout>
-        <v-layout>
+        <v-layout align-center justify-center row fill-height ma-2>
             <v-flex>
                 <NewTask></NewTask>
             </v-flex>
         </v-layout>
-        <v-layout row>
-            <v-flex xs12 sm6 offset-sm1>
+        <v-layout row align-center justify-center>
+            <v-flex sm7>
                 <v-card>
-                    <v-list>
+                    <v-list three-line>
                         <v-list-tile v-for="(item, index) in tasks" :key="item.id" @click="">
                             <v-list-tile-action>
                                 <v-btn icon ripple @click="startTask(item)" v-if="item.isDoing === false">
@@ -48,9 +48,7 @@
                                 <v-list-tile-title>
                                     {{ item.title }}
                                 </v-list-tile-title>
-                                <v-list-tile-sub-title>
-                                    {{ getTime(item)}}
-                                </v-list-tile-sub-title>
+                                <v-list-tile-sub-title>開始:{{ getTime(item.startTime) }} / 終了: {{ getTime(item.endTime) }}</v-list-tile-sub-title>
                             </v-list-tile-content>
                             <v-list-tile-action>
                                 <v-btn icon ripple @click="deleteTask(index)">
@@ -120,6 +118,7 @@ export default class TaskList extends Vue {
         .then(doc => {
             if (doc.exists && doc.data()!.tasks ) {
                 //どうしても!で無視しないと通らなかった。手前でundefinedチェックしても駄目。
+                // startとendが読み込めていない感じ
                 this.$store.commit("setTasks", doc.data()!.tasks);
                 console.log("tasks=" + doc.data()!.tasks);
             }else{
@@ -146,14 +145,15 @@ export default class TaskList extends Vue {
         fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
     }
 
-    getTime(item: ITask) : string {
-        let startTime: string = "";
-        let endTime: string = "";
-        // なぜかDate型渡しているのにgetHours()がないとか怒られる謎。
-        // if (item.startTime !== null) {
-        //     startTime = util.getTimeString(item.startTime);
-        // }
-        return `開始時刻: ${startTime} / 終了時刻: ${endTime}`
+    getTime(time: Date) : string {
+        let timeStr: string = "";
+        //なぜかDate型渡しているのにgetHours()がないとか怒られる謎。InterfaceってObject入るんだっけ?ここは後で直す
+        //仕方ないのでObjectが入っている時もスキップするようにした
+        console.log("time instance =" + Object.prototype.toString.call(time));
+        if (time != null && Object.prototype.toString.call(time) != "[object Object]") {
+            timeStr = util.getTimeString(time);
+        }
+        return timeStr;
     }
 
     created() : void {

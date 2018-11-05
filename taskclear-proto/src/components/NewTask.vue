@@ -1,11 +1,11 @@
 <template>
     <div id="newtask">
       <v-card>
-        <v-layout row wrap fill-height align-center justify-center>
-            <v-flex class="ma-2">
-                <v-text-field placeholder="新しいタスクを追加" outline v-model="inputvalue" clearable @keyup.enter="addTask" @keypress="setCanSubmit"></v-text-field>
+        <v-layout row fill-height align-center justify-center>
+            <v-flex mt-4 ml-2>
+                <v-text-field placeholder="新しいタスクを追加" single-line outline v-model="inputvalue" clearable hint="記載したらEnterか追加ボタン" @keyup.enter="addTask" @keypress="setCanSubmit"></v-text-field>
             </v-flex>
-            <v-flex>
+            <v-flex ma-2>
                 <v-btn @click="addTask">追加</v-btn>
             </v-flex>
         </v-layout>
