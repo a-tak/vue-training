@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import firebase from "firebase"
+import firebase,{ firestore } from "firebase"
 import NewTask from "@/components/NewTask.vue"
 import util from "../util";
 import fb from "../firebaseUtil";
@@ -120,14 +120,7 @@ export default class TaskList extends Vue {
             if (doc.exists) {
                 const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
                 if (firedoc !== undefined ) {
-                    let newTasks: ITask[] = [];
-                    for (const task of firedoc.tasks) {
-                        task.date = task.date.toDate();
-                        task.startTime = task.startTime.toDate();
-                        task.endTime = task.endTime.toDate();
-                        newTasks.push(task);
-                    }
-                    this.$store.commit("setTasks", newTasks);
+                    this.$store.commit("setTasks", firedoc.tasks);
                 }
             }else{
                 console.log("tasks not found");
@@ -153,13 +146,13 @@ export default class TaskList extends Vue {
         fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
     }
 
-    getTime(time: Date) : string {
+    getTime(time: firestore.Timestamp) : string {
         let timeStr: string = "";
         //なぜかDate型渡しているのにgetHours()がないとか怒られる謎。InterfaceってObject入るんだっけ?ここは後で直す
         //仕方ないのでObjectが入っている時もスキップするようにした
         console.log("time instance =" + Object.prototype.toString.call(time));
-        if (time != null && Object.prototype.toString.call(time) != "[object Object]") {
-            timeStr = util.getTimeString(time);
+        if (time != null) {
+            timeStr = util.getTimeString(time.toDate());
         }
         return timeStr;
     }

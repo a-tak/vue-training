@@ -1,6 +1,8 @@
+import firebase,{ firestore } from 'firebase';
+
 export default interface ITask {
     id: string;
-    date: Date;
+    date: firestore.Timestamp;
     title: string;
     isDoing: boolean;
     startTime: Date | null;

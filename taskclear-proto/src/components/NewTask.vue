@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import firebase from 'firebase';
+import firebase,{ firestore } from 'firebase';
 import uuid from 'uuid';
 import util from '../util';
 import fb from '../firebaseUtil';
@@ -38,7 +38,7 @@ export default class NewTask extends Vue {
     const d: Date = this.$store.getters.targetDate;
     // 一旦時間は0:00でセット。セクションを取り入れるときはここの時間をセクションの時間に変更する
     const date = new Date(d.getFullYear(),d.getMonth(),d.getDate(),0,0,0,0);
-    let task:ITask = {id: uuid(), date: date,  title: this.inputvalue, isDoing:false, startTime:null, endTime:null};
+    let task:ITask = {id: uuid(), date: firestore.Timestamp.fromDate(date),  title: this.inputvalue, isDoing:false, startTime:null, endTime:null};
     this.$store.commit("addTask",
         task);
 
