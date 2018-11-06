@@ -12,14 +12,14 @@
                     full-width
                     min-width="290px"
                 >
-                    <v-text-field
+                <v-text-field
                     slot="activator"
                     v-model="targetDate"
                     label="日付を選択してください"
                     prepend-icon="event"
                     readonly
-                    ></v-text-field>
-                    <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" ></v-date-picker>
+                ></v-text-field>
+                <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" ></v-date-picker>
                 </v-menu>
                 </v-flex>
             <v-flex>
@@ -62,6 +62,7 @@
         </v-layout>   
     </div>
 </template>
+
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import firebase from "firebase"
@@ -116,11 +117,17 @@ export default class TaskList extends Vue {
         .doc(util.getDateString(this.$store.getters.targetDate))
         .get()
         .then(doc => {
-            if (doc.exists && doc.data()!.tasks ) {
-                //どうしても!で無視しないと通らなかった。手前でundefinedチェックしても駄目。
-                // startとendが読み込めていない感じ
-                this.$store.commit("setTasks", doc.data()!.tasks);
-                console.log("tasks=" + doc.data()!.tasks);
+            if (doc.exists) {
+                const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
+                if (firedoc !== undefined ) {
+                    let newTasks: ITask[] = [];
+                    for (const task of firedoc.tasks) {
+                        task.startTime = task.startTime.toDate();
+                        task.endTime = task.endTime.toDate();
+                        newTasks.push(task);
+                    }
+                    this.$store.commit("setTasks", newTasks);
+                }
             }else{
                 console.log("tasks not found");
                 this.$store.commit("setTasks",[]);
