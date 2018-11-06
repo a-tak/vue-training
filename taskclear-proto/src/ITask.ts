@@ -5,6 +5,6 @@ export default interface ITask {
     date: firestore.Timestamp;
     title: string;
     isDoing: boolean;
-    startTime: Date | null;
-    endTime: Date | null;
+    startTime: firestore.Timestamp | null;
+    endTime: firestore.Timestamp | null;
 }

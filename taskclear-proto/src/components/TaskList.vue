@@ -70,6 +70,8 @@ import NewTask from "@/components/NewTask.vue"
 import util from "../util";
 import fb from "../firebaseUtil";
 import ITask from "../ITask";
+import uuid from 'uuid';
+import { exists } from 'fs';
 
 @Component({
   components: {
@@ -81,6 +83,10 @@ export default class TaskList extends Vue {
 
     get tasks():ITask[] {
         return this.$store.getters.tasks;
+    }
+
+    set tasks(value: ITask[]) {
+        this.$store.commit("setTasks", value);
     }
     
     get targetDate(): string {
@@ -134,15 +140,40 @@ export default class TaskList extends Vue {
         fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
     }
 
-    startTask(item: ITask) : void {
-        item.isDoing = true;
-        item.startTime = new Date();
+    startTask(task: ITask) : void {
+        //開始しているタスクがあれば中断処理する
+        this.tasks.forEach(function (this: TaskList, otherTask:ITask, index, array) {
+            if (otherTask.isDoing == true) {
+                this.stopTask(otherTask);
+                let newTask: ITask = {id: uuid(),
+                                      date: firestore.Timestamp.now(),
+                                      title: otherTask.title,
+                                      startTime: null,
+                                      endTime: null,
+                                      isDoing: false};
+                array.push(newTask);
+                return;
+            }
+        },this);
+        task.isDoing = true;
+        task.startTime = firestore.Timestamp.now();
+
+        this.tasks.sort(function(a: ITask,b: ITask){
+            if (a.startTime == null) {
+                return 1;
+            }else if(b.startTime == null) {
+                return -1;
+            } else {
+                return a.startTime.nanoseconds - b.startTime.nanoseconds;
+            }
+        });
+
         fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
     }
 
-    stopTask(item: ITask) : void {
-        item.isDoing = false;
-        item.endTime = new Date();
+    stopTask(task: ITask) : void {
+        task.isDoing = false;
+        task.endTime = firestore.Timestamp.now();
         fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
     }
 
