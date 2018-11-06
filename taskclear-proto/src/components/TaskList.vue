@@ -164,7 +164,7 @@ export default class TaskList extends Vue {
             }else if(b.startTime == null) {
                 return -1;
             } else {
-                return a.startTime.nanoseconds - b.startTime.nanoseconds;
+                return a.startTime.seconds - b.startTime.seconds;
             }
         });
 
