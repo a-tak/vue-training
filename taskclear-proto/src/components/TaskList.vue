@@ -122,6 +122,7 @@ export default class TaskList extends Vue {
                 if (firedoc !== undefined ) {
                     let newTasks: ITask[] = [];
                     for (const task of firedoc.tasks) {
+                        task.date = task.date.toDate();
                         task.startTime = task.startTime.toDate();
                         task.endTime = task.endTime.toDate();
                         newTasks.push(task);
