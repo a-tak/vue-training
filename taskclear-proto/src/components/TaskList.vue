@@ -148,7 +148,7 @@ export default class TaskList extends Vue {
 
     startTask(task: ITask) : void {
         //開始しているタスクがあれば中断処理する
-        this.tasks.forEach(function (this: TaskList, otherTask:ITask, index, array) {
+        for (const otherTask of this.tasks) {
             if (otherTask.isDoing == true) {
                 this.stopTask(otherTask);
                 let newTask: ITask = {id: uuid(),
@@ -157,10 +157,10 @@ export default class TaskList extends Vue {
                                       startTime: null,
                                       endTime: null,
                                       isDoing: false};
-                array.push(newTask);
-                return;
+                this.tasks.push(newTask);
             }
-        },this);
+        }
+
         task.isDoing = true;
         task.startTime = firestore.Timestamp.now();
 
