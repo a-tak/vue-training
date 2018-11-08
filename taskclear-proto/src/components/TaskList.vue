@@ -45,7 +45,7 @@
                                 </v-btn>
                             </v-list-tile-action>
                             <v-list-tile-content>
-                                <v-list-tile-title>
+                                <v-list-tile-title v-bind:class="{ done: item.endTime!=null}">
                                     {{ item.title }}
                                 </v-list-tile-title>
                                 <v-list-tile-sub-title>開始:{{ getTime(item.startTime) }} / 終了: {{ getTime(item.endTime) }}</v-list-tile-sub-title>
@@ -59,9 +59,15 @@
                     </v-list>
                 </v-card>
             </v-flex>
-        </v-layout>   
+        </v-layout>
     </div>
 </template>
+
+<style>
+.done {
+    text-decoration: line-through;
+}
+</style>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
@@ -88,7 +94,7 @@ export default class TaskList extends Vue {
     set tasks(value: ITask[]) {
         this.$store.commit("setTasks", value);
     }
-    
+
     get targetDate(): string {
       return this.$store.getters.targetDate.toISOString().substr(0, 10)
     }
