@@ -90,14 +90,14 @@ import { Domain } from 'domain';
 export default class TaskList extends Vue {
 
     get tasks():Task[] {
-        console.log("this.$store.getters.taskController = " + this.$store.getters.taskController);
-        console.log("this.$store.getters.taskController instance =" + Object.prototype.toString.call(this.$store.getters.taskController));
-        console.log("this.$store.getters.taskController.tasks = " + this.$store.getters.taskController.tasks);
+        console.log("this.$store.getters.taskController.tasks = " + this.$store.getters.taskController.tasks.length);
         return this.$store.getters.taskController.tasks;
     }
 
     set tasks(value: Task[]) {
-        this.$store.commit("setTasks", value);
+        let tc: TaskController = new TaskController();
+        tc.tasks = value;
+        this.$store.commit("setTaskCtrl", tc);
     }
 
     get targetDate(): string {
@@ -134,17 +134,22 @@ export default class TaskList extends Vue {
         .doc(util.getDateString(this.$store.getters.targetDate))
         .get()
         .then(doc => {
+            let tc = new TaskController();
             if (doc.exists) {
+                // ここどうにかするし、エラーになる
                 const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
                 if (firedoc !== undefined ) {
-                    let tc = new TaskController();
-                    tc.loadFirestoreLiteral(firedoc.tasks)
-                    console.log("tc.tasks.length = " + tc.tasks.length);
-                    this.$store.commit("setTaskCtrl", tc);
+                    if (firedoc.tasks != undefined) {
+                        tc.loadFirestoreLiteral(firedoc.tasks)
+                        this.$store.commit("setTaskCtrl", tc);
+                    }else{
+                        this.$store.commit("setTaskCtrl",tc);
+                    }
+                } else {
+                    this.$store.commit("setTaskCtrl",tc);
                 }
             }else{
-                console.log("tasks not found");
-                this.$store.commit("setTasks",[]);
+                this.$store.commit("setTaskCtrl",tc);
             }
         });
     }

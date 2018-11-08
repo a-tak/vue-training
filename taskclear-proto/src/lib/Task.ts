@@ -3,12 +3,21 @@ import uuid from 'uuid';
 
 export default class Task {
 
-    private id_: string = "";
-    private date_: Date = new Date();
-    private title_: string = "";
-    private isDoing_: boolean = false;
-    private startTime_: Date | null = null;
-    private endTime_: Date | null = null;
+    constructor(date:Date, title: string) {
+        this.id_ = uuid();
+        this.date_ = date;
+        this.title_ = title;
+        this.isDoing_ = false;
+        this.startTime_ = null;
+        this.endTime_ = null;
+    }
+
+    private id_: string;
+    private date_: Date;
+    private title_ : string;
+    private isDoing_: boolean;
+    private startTime_: Date | null;
+    private endTime_: Date | null;
 
     get id(): string { return this.id }
     set id(value: string) { this.id_ = value }
@@ -27,10 +36,7 @@ export default class Task {
      * 中断タスクを作成
      */
     createPauseTask(): Task {
-        let newTask: Task = new Task();
-        newTask.id = uuid();
-        newTask.date = new Date();
-        newTask.title = this.title;
+        let newTask: Task = new Task(this.date_,this.title);
         newTask.isDoing = false;
         newTask.startTime = null;
         newTask.endTime = null;

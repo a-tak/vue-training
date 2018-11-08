@@ -14,7 +14,7 @@ export default new Vuex.Store({
     targetDate: new Date(),
   },
   getters: {
-    taskController(state) { return state.taskCtrl },
+    taskCtrl(state) { return state.taskCtrl },
     user(state) { return state.user},
     targetDate(state) { return state.targetDate},
   },
@@ -26,8 +26,8 @@ export default new Vuex.Store({
       state.taskCtrl.tasks.splice(index,1);
     },
     setTaskCtrl(state, taskCtrl:TaskController) {
-      console.log("setTasks =" + taskCtrl);
-      console.log("setTasks count=" + taskCtrl.tasks);
+      console.log("setTaskCtrl =" + taskCtrl);
+      console.log("setTaskCtrl count=" + taskCtrl.tasks.length);
       state.taskCtrl = taskCtrl;
     },
     setUser(state, user) {

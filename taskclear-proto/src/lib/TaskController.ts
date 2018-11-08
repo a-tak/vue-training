@@ -5,7 +5,7 @@ import ITask from '@/ITask';
 // Taskオブジェクトを束ねるクラス
 export default class TaskController {
     
-    tasks_: Task[] = [];
+    private tasks_: Task[] = [];
     
     get tasks(): Task[] { return this.tasks_ }
     set tasks(value: Task[]) { this.tasks_ = value }
@@ -15,6 +15,7 @@ export default class TaskController {
      */
     createFirestoreLiteral(): ITask[] {
         let literals: ITask[] = []; 
+        console.log("createFirestoreLiteral tasks_" + this.tasks_.length);
         for (const task of this.tasks_) {
             let literal: ITask = {
                 id: task.id,
@@ -37,10 +38,8 @@ export default class TaskController {
         console.log("fsObj count=" + fsObjs.length);
         this.tasks_ = [];
         for (const fsobj of fsObjs) {
-            let task = new Task();
+            let task = new Task(fsobj.date.toDate(),fsobj.title);
             task.id = fsobj.id;
-            task.date = fsobj.date.toDate();
-            task.title = fsobj.title;
             task.isDoing = fsobj.isDoing;
             if (fsobj.startTime !=null) {
                 task.startTime = fsobj.startTime.toDate();
