@@ -75,9 +75,11 @@ import firebase,{ firestore } from "firebase"
 import NewTask from "@/components/NewTask.vue"
 import util from "../util";
 import fb from "../firebaseUtil";
-import ITask from "../ITask";
 import uuid from 'uuid';
 import { exists } from 'fs';
+import Task from '../lib/Task';
+import TaskController from '../lib/TaskController';
+import { Domain } from 'domain';
 
 @Component({
   components: {
@@ -87,11 +89,14 @@ import { exists } from 'fs';
 
 export default class TaskList extends Vue {
 
-    get tasks():ITask[] {
-        return this.$store.getters.tasks;
+    get tasks():Task[] {
+        console.log("this.$store.getters.taskController = " + this.$store.getters.taskController);
+        console.log("this.$store.getters.taskController instance =" + Object.prototype.toString.call(this.$store.getters.taskController));
+        console.log("this.$store.getters.taskController.tasks = " + this.$store.getters.taskController.tasks);
+        return this.$store.getters.taskController.tasks;
     }
 
-    set tasks(value: ITask[]) {
+    set tasks(value: Task[]) {
         this.$store.commit("setTasks", value);
     }
 
@@ -116,10 +121,10 @@ export default class TaskList extends Vue {
     //日付を変更したのを監視してタスクを読み込み直し
     @Watch("targetDate")
     onValueChange(newValue: string,oldValue: string): void {
-        this.getTasks();
+        this.loadTasks();
     }
 
-    getTasks() : void {
+    loadTasks() : void {
         console.log("getTasks start!");
         firebase
         .firestore()
@@ -132,7 +137,10 @@ export default class TaskList extends Vue {
             if (doc.exists) {
                 const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
                 if (firedoc !== undefined ) {
-                    this.$store.commit("setTasks", firedoc.tasks);
+                    let tc = new TaskController();
+                    tc.loadFirestoreLiteral(firedoc.tasks)
+                    console.log("tc.tasks.length = " + tc.tasks.length);
+                    this.$store.commit("setTaskCtrl", tc);
                 }
             }else{
                 console.log("tasks not found");
@@ -143,43 +151,37 @@ export default class TaskList extends Vue {
 
     deleteTask(index: number) : void {
         this.$store.commit("deleteTask",index);
-        fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
+        fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.task);
     }
 
-    startTask(task: ITask) : void {
+    startTask(task: Task) : void {
         //開始しているタスクがあれば中断処理する
         for (const otherTask of this.tasks) {
             if (otherTask.isDoing == true) {
                 this.stopTask(otherTask);
-                let newTask: ITask = {id: uuid(),
-                                      date: firestore.Timestamp.now(),
-                                      title: otherTask.title,
-                                      startTime: null,
-                                      endTime: null,
-                                      isDoing: false};
-                this.tasks.push(newTask);
+                this.tasks.push(otherTask.createPauseTask());
             }
         }
 
         task.isDoing = true;
-        task.startTime = firestore.Timestamp.now();
+        task.startTime = new Date;
 
-        this.tasks.sort(function(a: ITask,b: ITask){
+        this.tasks.sort(function(a: Task,b: Task){
             if (a.startTime == null) {
                 return 1;
             }else if(b.startTime == null) {
                 return -1;
             } else {
-                return a.startTime.seconds - b.startTime.seconds;
+                return a.startTime.getUTCSeconds() - b.startTime.getUTCSeconds();
             }
         });
 
         fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
     }
 
-    stopTask(task: ITask) : void {
+    stopTask(task: Task) : void {
         task.isDoing = false;
-        task.endTime = firestore.Timestamp.now();
+        task.endTime = new Date();
         fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
     }
 
@@ -195,7 +197,7 @@ export default class TaskList extends Vue {
     }
 
     created() : void {
-        this.getTasks();
+        this.loadTasks();
     }
 
     logout() : void {

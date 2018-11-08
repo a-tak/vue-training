@@ -1,0 +1,41 @@
+import firebase,{ firestore } from 'firebase';
+import uuid from 'uuid';
+
+export default class Task {
+
+    private id_: string = "";
+    private date_: Date = new Date();
+    private title_: string = "";
+    private isDoing_: boolean = false;
+    private startTime_: Date | null = null;
+    private endTime_: Date | null = null;
+
+    get id(): string { return this.id }
+    set id(value: string) { this.id_ = value }
+    get date(): Date { return this.date_ }
+    set date(value: Date) { this.date_ = value }
+    get title(): string { return this.title_ }
+    set title(value: string) { this.title_ = value }
+    get isDoing(): boolean { return this.isDoing_ }
+    set isDoing(value: boolean) { this.isDoing_ = value }
+    get startTime(): Date | null { return this.startTime_ }
+    set startTime(value: Date | null) { this.startTime_ = value }
+    get endTime(): Date | null { return this.endTime_ }
+    set endTime(value: Date | null) { this.endTime_ = value }
+
+    /**
+     * 中断タスクを作成
+     */
+    createPauseTask(): Task {
+        let newTask: Task = new Task();
+        newTask.id = uuid();
+        newTask.date = new Date();
+        newTask.title = this.title;
+        newTask.isDoing = false;
+        newTask.startTime = null;
+        newTask.endTime = null;
+
+        return newTask;
+    }
+
+}
