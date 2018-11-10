@@ -90,8 +90,7 @@ import { Domain } from 'domain';
 export default class TaskList extends Vue {
 
     get tasks():Task[] {
-        console.log("this.$store.getters.taskController.tasks = " + this.$store.getters.taskController.tasks.length);
-        return this.$store.getters.taskController.tasks;
+        return this.$store.getters.taskCtrl.tasks;
     }
 
     set tasks(value: Task[]) {
@@ -156,7 +155,7 @@ export default class TaskList extends Vue {
 
     deleteTask(index: number) : void {
         this.$store.commit("deleteTask",index);
-        fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.task);
+        fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.taskCtrl);
     }
 
     startTask(task: Task) : void {
@@ -177,26 +176,23 @@ export default class TaskList extends Vue {
             }else if(b.startTime == null) {
                 return -1;
             } else {
-                return a.startTime.getUTCSeconds() - b.startTime.getUTCSeconds();
+                return a.startTime.getTime() - b.startTime.getTime();
             }
         });
 
-        fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
+        fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.taskCtrl);
     }
 
     stopTask(task: Task) : void {
         task.isDoing = false;
         task.endTime = new Date();
-        fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.tasks);
+        fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.taskCtrl);
     }
 
-    getTime(time: firestore.Timestamp) : string {
+    getTime(time: Date) : string {
         let timeStr: string = "";
-        //なぜかDate型渡しているのにgetHours()がないとか怒られる謎。InterfaceってObject入るんだっけ?ここは後で直す
-        //仕方ないのでObjectが入っている時もスキップするようにした
-        console.log("time instance =" + Object.prototype.toString.call(time));
         if (time != null) {
-            timeStr = util.getTimeString(time.toDate());
+            timeStr = util.getTimeString(time);
         }
         return timeStr;
     }

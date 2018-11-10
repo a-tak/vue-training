@@ -4,39 +4,39 @@ import uuid from 'uuid';
 export default class Task {
 
     constructor(date:Date, title: string) {
-        this.id_ = uuid();
-        this.date_ = date;
-        this.title_ = title;
-        this.isDoing_ = false;
-        this.startTime_ = null;
-        this.endTime_ = null;
+        this._id = uuid();
+        this._date = date;
+        this._title = title;
+        this._isDoing = false;
+        this._startTime = null;
+        this._endTime = null;
     }
 
-    private id_: string;
-    private date_: Date;
-    private title_ : string;
-    private isDoing_: boolean;
-    private startTime_: Date | null;
-    private endTime_: Date | null;
+    private _id: string;
+    private _date: Date;
+    private _title : string;
+    private _isDoing: boolean;
+    private _startTime: Date | null;
+    private _endTime: Date | null;
 
-    get id(): string { return this.id }
-    set id(value: string) { this.id_ = value }
-    get date(): Date { return this.date_ }
-    set date(value: Date) { this.date_ = value }
-    get title(): string { return this.title_ }
-    set title(value: string) { this.title_ = value }
-    get isDoing(): boolean { return this.isDoing_ }
-    set isDoing(value: boolean) { this.isDoing_ = value }
-    get startTime(): Date | null { return this.startTime_ }
-    set startTime(value: Date | null) { this.startTime_ = value }
-    get endTime(): Date | null { return this.endTime_ }
-    set endTime(value: Date | null) { this.endTime_ = value }
+    get id(): string { return this._id }
+    set id(value: string) { this._id = value }
+    get date(): Date { return this._date }
+    set date(value: Date) { this._date = value }
+    get title(): string { return this._title }
+    set title(value: string) { this._title = value }
+    get isDoing(): boolean { return this._isDoing }
+    set isDoing(value: boolean) { this._isDoing = value }
+    get startTime(): Date | null { return this._startTime }
+    set startTime(value: Date | null) { this._startTime = value }
+    get endTime(): Date | null { return this._endTime }
+    set endTime(value: Date | null) { this._endTime = value }
 
     /**
      * 中断タスクを作成
      */
     createPauseTask(): Task {
-        let newTask: Task = new Task(this.date_,this.title);
+        let newTask: Task = new Task(this._date,this.title);
         newTask.isDoing = false;
         newTask.startTime = null;
         newTask.endTime = null;
