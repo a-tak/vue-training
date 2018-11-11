@@ -25,7 +25,6 @@ import Task from '../lib/Task';
 @Component
 export default class NewTask extends Vue {
 
-  //なぜかinputvalueはアンダーバーつけるとエラーになる
   inputvalue_: string = "";
   canSubmit_: boolean = false;
 

@@ -35,32 +35,42 @@
             <v-flex sm7>
                 <v-card>
                     <v-list three-line>
-                        <v-list-tile v-for="(item, index) in tasks" :key="item.id" @click="">
-                            <v-list-tile-action>
-                                <v-btn icon ripple @click="startTask(item)" v-if="item.isDoing === false && item.endTime==null">
-                                    <v-icon color="purple">play_circle_filled</v-icon>
-                                </v-btn>
-                                <v-btn icon ripple @click="startTask(item)" v-else-if="item.isDoing === false && item.endTime!=null">
-                                    <v-icon color="grey">play_circle_filled</v-icon>
-                                </v-btn>
-                                <v-btn icon ripple @click="stopTask(item)" v-else-if="item.isDoing === true">
-                                    <v-icon color="purple">pause_circle_filled</v-icon>
-                                </v-btn>
-                            </v-list-tile-action>
-                            <v-list-tile-content>
-                                <v-list-tile-title v-bind:class="{ done: item.endTime!=null}">
-                                    {{ item.title }}
-                                </v-list-tile-title>
-                                <v-list-tile-sub-title>開始:{{ getTime(item.startTime) }} / 終了: {{ getTime(item.endTime) }}</v-list-tile-sub-title>
-                            </v-list-tile-content>
-                            <v-list-tile-action>
-                                <v-btn icon ripple @click="deleteTask(index)">
-                                    <v-icon color="grey lighten-1">delete</v-icon>
-                                </v-btn>
-                            </v-list-tile-action>
+                        <v-list-tile v-for="(item, index) in tasks" :key="item.id" @click.stop="editTask(index)">
+                            <template v-if="index == editIndex_" >
+                                <TaskEdit v-bind:task_="item" v-on:endEditEvent="endEditTask"></TaskEdit>
+                            </template>
+                            <template v-else>
+                                <v-list-tile-action>
+                                    <v-btn icon ripple @click.stop="startTask(item)" v-if="item.isDoing === false && item.endTime==null">
+                                        <v-icon color="purple">play_circle_filled</v-icon>
+                                    </v-btn>
+                                    <v-btn icon ripple @click.stop="startTask(item)" v-else-if="item.isDoing === false && item.endTime!=null">
+                                        <v-icon color="grey">play_circle_filled</v-icon>
+                                    </v-btn>
+                                    <v-btn icon ripple @click.stop="stopTask(item)" v-else-if="item.isDoing === true">
+                                        <v-icon color="purple">pause_circle_filled</v-icon>
+                                    </v-btn>
+                                </v-list-tile-action>
+                                <v-list-tile-content>
+                                    <v-list-tile-title v-bind:class="{ done: item.endTime!=null}">
+                                        {{ item.title }}
+                                    </v-list-tile-title>
+                                    <v-list-tile-sub-title>開始:{{ getTime(item.startTime) }} / 終了: {{ getTime(item.endTime) }}</v-list-tile-sub-title>
+                                </v-list-tile-content>
+                                <v-list-tile-action>
+                                    <v-btn icon ripple @click.stop="deleteTask(index)">
+                                        <v-icon color="grey lighten-1">delete</v-icon>
+                                    </v-btn>
+                                </v-list-tile-action>
+                            </template>
                         </v-list-tile>
                     </v-list>
                 </v-card>
+            </v-flex>
+        </v-layout>
+        <v-layout align-center justify-center row fill-height ma-2>
+            <v-flex>
+                <NewTask></NewTask>
             </v-flex>
         </v-layout>
     </div>
@@ -74,8 +84,9 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import firebase,{ firestore } from "firebase"
-import NewTask from "@/components/NewTask.vue"
+import firebase,{ firestore } from "firebase";
+import NewTask from "@/components/NewTask.vue";
+import TaskEdit from "@/components/TaskEdit.vue";
 import util from "../util";
 import fb from "../firebaseUtil";
 import uuid from 'uuid';
@@ -86,11 +97,15 @@ import { Domain } from 'domain';
 
 @Component({
   components: {
-    NewTask
+    NewTask,
+    TaskEdit,
   },
 })
 
 export default class TaskList extends Vue {
+
+    //編集中のインデックスを保持。どこも編集中じゃ無い場合は-1。
+    private editIndex_: number = -1;
 
     get tasks():Task[] {
         return this.$store.getters.taskCtrl.tasks;
@@ -158,7 +173,7 @@ export default class TaskList extends Vue {
 
     deleteTask(index: number) : void {
         this.$store.commit("deleteTask",index);
-        fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.taskCtrl);
+        this.save();
     }
 
     startTask(task: Task) : void {
@@ -183,13 +198,27 @@ export default class TaskList extends Vue {
             }
         });
 
-        fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.taskCtrl);
+        this.save();
     }
 
     stopTask(task: Task) : void {
         task.isDoing = false;
         task.endTime = new Date();
+        this.save();
+    }
+
+    save(): void {
         fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.taskCtrl);
+    }
+
+    editTask(index: number) {
+        this.editIndex_ = index;
+    }
+
+    endEditTask(task: Task) {
+        this.tasks[this.editIndex_] = task;
+        this.editIndex_ = -1;
+        this.save();
     }
 
     getTime(time: Date) : string {

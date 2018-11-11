@@ -44,4 +44,19 @@ export default class Task {
         return newTask;
     }
 
+    /**
+     * タスクをコピー
+     * キャンセル機能などで元の値を待避するために使用
+     */
+    copy(): Task {
+        let newTask: Task = new Task(this.date_,this.title);
+        newTask.id = this.id_;
+        newTask.isDoing = this.isDoing_;
+        newTask.startTime = this.startTime_;
+        newTask.endTime = this.endTime_;
+
+        return newTask;
+
+    }
+
 }
