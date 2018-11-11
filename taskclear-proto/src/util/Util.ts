@@ -1,7 +1,7 @@
 export default class Util {
     // 現地時間のyyyy-mm-dd形式の文字列を返す
     static getDateString(d: Date): string {
-        return `${d.getFullYear().toString()}-${("0" + d.getMonth().toString()).slice(-2)}-${("0" + d.getDate().toString()).slice(-2)}`;
+        return `${d.getFullYear().toString()}-${("0" + (d.getMonth()+1).toString()).slice(-2)}-${("0" + d.getDate().toString()).slice(-2)}`;
     }
 
     /**
@@ -45,7 +45,7 @@ export default class Util {
         } else {
             throw new Error(`timeStringの形式が不正です(${timeString})`);
         }
-        const dateStr:string = `${baseDate.getFullYear()}/${baseDate.getMonth()}/${baseDate.getDate()} ${retStr}`;
+        const dateStr:string = `${baseDate.getFullYear()}/${baseDate.getMonth()+1}/${baseDate.getDate()} ${retStr}`;
         console.log("dateStr=" + dateStr);
         return new Date(dateStr);
     }

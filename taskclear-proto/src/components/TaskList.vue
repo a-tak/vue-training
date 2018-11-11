@@ -36,7 +36,7 @@
                 <v-card>
                     <v-list three-line>
                         <v-list-tile v-for="(item, index) in tasks" :key="item.id" @click.stop="editTask(index)">
-                            <template v-if="index == editIndex_" >
+                            <template v-if="index == editIndex_">
                                 <TaskEdit v-bind:task_="item" v-on:endEditEvent="endEditTask"></TaskEdit>
                             </template>
                             <template v-else>
@@ -66,11 +66,6 @@
                         </v-list-tile>
                     </v-list>
                 </v-card>
-            </v-flex>
-        </v-layout>
-        <v-layout align-center justify-center row fill-height ma-2>
-            <v-flex>
-                <NewTask></NewTask>
             </v-flex>
         </v-layout>
     </div>
