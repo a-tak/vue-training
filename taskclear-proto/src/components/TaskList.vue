@@ -87,13 +87,12 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import firebase,{ firestore } from "firebase";
 import NewTask from "@/components/NewTask.vue";
 import TaskEdit from "@/components/TaskEdit.vue";
-import util from "../util";
-import fb from "../firebaseUtil";
+import util from "../util/Util";
+import fb from "../util/FirebaseUtil";
 import uuid from 'uuid';
 import { exists } from 'fs';
 import Task from '../lib/Task';
 import TaskController from '../lib/TaskController';
-import { Domain } from 'domain';
 
 @Component({
   components: {

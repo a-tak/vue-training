@@ -17,8 +17,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 import firebase,{ firestore } from 'firebase';
 import uuid from 'uuid';
-import util from '../util';
-import fb from '../firebaseUtil';
+import util from '../util/Util';
+import fb from '../util/FirebaseUtil';
 import ITask from '../ITask';
 import Task from '../lib/Task';
 
