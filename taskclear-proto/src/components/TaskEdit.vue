@@ -13,6 +13,8 @@
             <v-flex>
                 <v-text-field placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="task_.estimateTime" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
             </v-flex>
+        </v-layout>
+        <v-layout row fill-height align-center justify-center>
             <v-flex>
                 <v-btn @click.stop="save">保存</v-btn>
             </v-flex>
