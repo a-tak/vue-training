@@ -26,47 +26,61 @@
                 <v-btn @click="logout">ログアウト</v-btn>
             </v-flex>
         </v-layout>
+
         <v-layout align-center justify-center row fill-height ma-2>
             <v-flex>
                 <NewTask></NewTask>
             </v-flex>
         </v-layout>
-        <v-layout row align-center justify-center>
-            <v-flex sm7>
-                <v-card>
-                    <v-list three-line>
-                        <v-list-tile v-for="(item, index) in tasks" :key="item.id" @click.stop="editTask(index)">
-                            <template v-if="index == editIndex_">
-                                <TaskEdit v-bind:task_="item" v-on:endEditEvent="endEditTask"></TaskEdit>
-                            </template>
-                            <template v-else>
-                                <v-list-tile-action>
-                                    <v-btn icon ripple @click.stop="startTask(item)" v-if="item.isDoing === false && item.endTime==null">
-                                        <v-icon color="purple">play_circle_filled</v-icon>
-                                    </v-btn>
-                                    <v-btn icon ripple @click.stop="startTask(item)" v-else-if="item.isDoing === false && item.endTime!=null">
-                                        <v-icon color="grey">play_circle_filled</v-icon>
-                                    </v-btn>
-                                    <v-btn icon ripple @click.stop="stopTask(item)" v-else-if="item.isDoing === true">
-                                        <v-icon color="purple">pause_circle_filled</v-icon>
-                                    </v-btn>
-                                </v-list-tile-action>
-                                <v-list-tile-content>
-                                    <v-list-tile-title v-bind:class="{ done: item.endTime!=null}">
-                                        {{ item.title }}
-                                    </v-list-tile-title>
-                                    <v-list-tile-sub-title>開始:{{ getTime(item.startTime) }} / 終了: {{ getTime(item.endTime)}} / 実績: {{ item.actualTime }}分 / 見積: {{ item.estimateTime }}分 </v-list-tile-sub-title>
-                                </v-list-tile-content>
-                                <v-list-tile-action>
-                                    <v-btn icon ripple @click.stop="deleteTask(index)">
-                                        <v-icon color="grey lighten-1">delete</v-icon>
-                                    </v-btn>
-                                </v-list-tile-action>
-                            </template>
-                        </v-list-tile>
-                    </v-list>
-                </v-card>
-            </v-flex>
+
+        <v-layout
+            column
+            justify-center
+        >
+            <v-expansion-panel popout v-model="panel_" expand focusable>
+                <v-expansion-panel-content
+                    v-for="(task, index) in tasks"
+                    :key="task.id"
+                    hide-actions
+                    @click="editTask(index)"
+                >
+                    <v-layout
+                    slot="header"
+                    align-center
+                    row
+                    spacer
+                    >
+                        <v-flex xs4 sm2 md1>
+                            <v-btn icon ripple @click.stop="startTask(task)" v-if="task.isDoing === false && task.endTime==null">
+                                <v-icon color="purple">play_circle_filled</v-icon>
+                            </v-btn>
+                            <v-btn icon ripple @click.stop="startTask(task)" v-else-if="task.isDoing === false && task.endTime!=null">
+                                <v-icon color="grey">play_circle_filled</v-icon>
+                            </v-btn>
+                            <v-btn icon ripple @click.stop="stopTask(task)" v-else-if="task.isDoing === true">
+                                <v-icon color="purple">pause_circle_filled</v-icon>
+                            </v-btn>
+                        </v-flex>
+                        <v-flex sm5 md3>
+                            <span v-bind:class="{ done: task.endTime!=null}">
+                                {{ task.title }}
+                            </span>
+                        </v-flex>
+                        <v-flex nowrap sm5 md3>
+                            <span>開始:{{ getTime(task.startTime) }} / 終了: {{ getTime(task.endTime)}} / 実績: {{ task.actualTime }}分 / 見積: {{ task.estimateTime }}分 </span>
+                        </v-flex>
+                        <v-flex xs4 sm2 md1 class="text-xs-right">
+                            <v-btn icon ripple @click.stop="deleteTask(task)">
+                                <v-icon color="grey lighten-1">delete</v-icon>
+                            </v-btn>
+                        </v-flex>
+                    </v-layout>
+                    <v-card>
+                        <v-divider></v-divider>
+                        <TaskEdit v-bind:task_="task" v-bind:index_="index" v-on:endEditEvent="endEditTask"></TaskEdit>
+                    </v-card>
+                </v-expansion-panel-content>
+            </v-expansion-panel>
         </v-layout>
     </div>
 </template>
@@ -100,6 +114,7 @@ export default class TaskList extends Vue {
 
     //編集中のインデックスを保持。どこも編集中じゃ無い場合は-1。
     private editIndex_: number = -1;
+    private panel_ = [];
 
     get tasks():Task[] {
         return this.$store.getters.taskCtrl.tasks;
@@ -209,9 +224,9 @@ export default class TaskList extends Vue {
         this.editIndex_ = index;
     }
 
-    endEditTask(task: Task) {
-        this.tasks[this.editIndex_] = task;
-        this.editIndex_ = -1;
+    endEditTask(task: Task, index: number) {
+        this.tasks[index] = task;
+        this.panel_ =[];
         this.save();
     }
 
