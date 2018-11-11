@@ -37,10 +37,13 @@
                     <v-list three-line>
                         <v-list-tile v-for="(item, index) in tasks" :key="item.id" @click="">
                             <v-list-tile-action>
-                                <v-btn icon ripple @click="startTask(item)" v-if="item.isDoing === false">
+                                <v-btn icon ripple @click="startTask(item)" v-if="item.isDoing === false && item.endTime==null">
                                     <v-icon color="purple">play_circle_filled</v-icon>
                                 </v-btn>
-                                <v-btn icon ripple @click="stopTask(item)" v-if="item.isDoing === true">
+                                <v-btn icon ripple @click="startTask(item)" v-else-if="item.isDoing === false && item.endTime!=null">
+                                    <v-icon color="grey">play_circle_filled</v-icon>
+                                </v-btn>
+                                <v-btn icon ripple @click="stopTask(item)" v-else-if="item.isDoing === true">
                                     <v-icon color="purple">pause_circle_filled</v-icon>
                                 </v-btn>
                             </v-list-tile-action>
