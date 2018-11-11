@@ -7,8 +7,6 @@ export default class FirebaseUtil {
         // 一旦時間は0:00でセット。セクションを取り入れるときはここの時間をセクションの時間に変更する
         const d = new Date(date.getFullYear(),date.getMonth(),date.getDate(),0,0,0,0);
 
-        console.log("taskctrl=" + (taskctrl == null));
-
         firebase.firestore().collection("users").doc(uid)
         .collection("date").doc(util.getDateString(d)).set({ tasks: taskctrl.createFirestoreLiteral() });
     }

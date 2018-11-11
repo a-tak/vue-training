@@ -5,10 +5,13 @@
                 <v-text-field placeholder="タスク名" single-line outline v-model="task_.title" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
             </v-flex>
             <v-flex>
-                <v-text-field placeholder="開始時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="startTime_" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
+                <v-text-field placeholder="開始時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="startTime_" clearable autofocus @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
             </v-flex>
             <v-flex>
                 <v-text-field placeholder="終了時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="endTime_" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
+            </v-flex>
+            <v-flex>
+                <v-text-field placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="task_.estimateTime" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
             </v-flex>
             <v-flex>
                 <v-btn @click.stop="save">保存</v-btn>

@@ -10,6 +10,7 @@ export default class Task {
         this.isDoing_ = false;
         this.startTime_ = null;
         this.endTime_ = null;
+        this.estimateTime_ = 0;
     }
 
     private id_: string;
@@ -18,6 +19,7 @@ export default class Task {
     private isDoing_: boolean;
     private startTime_: Date | null;
     private endTime_: Date | null;
+    private estimateTime_ : number;
 
     get id(): string { return this.id_ }
     set id(value: string) { this.id_ = value }
@@ -31,6 +33,21 @@ export default class Task {
     set startTime(value: Date | null) { this.startTime_ = value }
     get endTime(): Date | null { return this.endTime_ }
     set endTime(value: Date | null) { this.endTime_ = value }
+    /**
+     * 見積時間(分)
+     */
+    get estimateTime(): number {return this.estimateTime_}
+    set estimateTime(value: number) { this.estimateTime_ = value }
+    /**
+     * 実績時間(分)
+     */
+    get actualTime(): number { 
+        if (this.startTime_ == null) return 0;
+        //終了時間が入っていないときは今の時間を使う
+        let endTime: Date = new Date();
+        if (this.endTime_ != null) endTime = this.endTime_; 
+        return Math.floor((endTime.getTime() - this.startTime_.getTime())/1000/60);
+    }
 
     /**
      * 中断タスクを作成
@@ -40,6 +57,9 @@ export default class Task {
         newTask.isDoing = false;
         newTask.startTime = null;
         newTask.endTime = null;
+        let estimate: number = this.estimateTime - this.actualTime;
+        if (estimate < 0) estimate = 0;
+        newTask.estimateTime = estimate;
 
         return newTask;
     }
@@ -54,6 +74,7 @@ export default class Task {
         newTask.isDoing = this.isDoing_;
         newTask.startTime = this.startTime_;
         newTask.endTime = this.endTime_;
+        newTask.estimateTime = this.estimateTime_;
 
         return newTask;
 

@@ -24,6 +24,8 @@ export default class TaskController {
                 isDoing: task.isDoing,
                 startTime: null,
                 endTime: null,
+                estimateTime: task.estimateTime,
+                actualTime: task.actualTime,
             }
             if (task.startTime!=null) { literal.startTime = firestore.Timestamp.fromDate(task.startTime)};
             if (task.endTime!=null) { literal.endTime = firestore.Timestamp.fromDate(task.endTime)};
@@ -41,6 +43,13 @@ export default class TaskController {
             let task = new Task(fsobj.date.toDate(),fsobj.title);
             task.id = fsobj.id;
             task.isDoing = fsobj.isDoing;
+            //過去データでフィールドが無いものはundefinedが返る為の対策
+            if (fsobj.estimateTime == undefined) {
+                task.estimateTime = 0;
+            }else{
+                task.estimateTime = fsobj.estimateTime;
+            }
+
             if (fsobj.startTime !=null) {
                 task.startTime = fsobj.startTime.toDate();
             }else {

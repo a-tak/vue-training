@@ -7,4 +7,6 @@ export default interface ITask {
     isDoing: boolean;
     startTime: firestore.Timestamp | null;
     endTime: firestore.Timestamp | null;
+    actualTime: number;
+    estimateTime: number;
 }

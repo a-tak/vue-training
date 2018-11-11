@@ -55,7 +55,7 @@
                                     <v-list-tile-title v-bind:class="{ done: item.endTime!=null}">
                                         {{ item.title }}
                                     </v-list-tile-title>
-                                    <v-list-tile-sub-title>開始:{{ getTime(item.startTime) }} / 終了: {{ getTime(item.endTime) }}</v-list-tile-sub-title>
+                                    <v-list-tile-sub-title>開始:{{ getTime(item.startTime) }} / 終了: {{ getTime(item.endTime)}} / 実績: {{ item.actualTime }}分 / 見積: {{ item.estimateTime }}分 </v-list-tile-sub-title>
                                 </v-list-tile-content>
                                 <v-list-tile-action>
                                     <v-btn icon ripple @click.stop="deleteTask(index)">
