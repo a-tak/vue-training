@@ -70,7 +70,7 @@
                             <span>開始:{{ getTime(task.startTime) }} / 終了: {{ getTime(task.endTime)}} / 実績: {{ task.actualTime }}分 / 見積: {{ task.estimateTime }}分 </span>
                         </v-flex>
                         <v-flex xs4 sm2 md1 class="text-xs-right">
-                            <v-btn icon ripple @click.stop="deleteTask(task)">
+                            <v-btn icon ripple @click.stop="deleteTask(index)">
                                 <v-icon color="grey lighten-1">delete</v-icon>
                             </v-btn>
                         </v-flex>
