@@ -1,20 +1,20 @@
 <template>
   <div id="Home">
     <Login v-if="!isLogin"></Login>
-    <TaskList v-if="isLogin"></TaskList>
+    <TaskListMain v-if="isLogin"></TaskListMain>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Login from "@/components/Login.vue"
-import TaskList from "@/components/TaskList.vue"
+import TaskListMain from "@/components/TaskListMain.vue"
 import firebase from "firebase"
 
 @Component({
   components: {
     Login,
-    TaskList
+    TaskListMain
   },
 })
 export default class Home extends Vue {
@@ -25,7 +25,6 @@ export default class Home extends Vue {
     firebase.auth().onAuthStateChanged(user => {
     console.log(user);
     if (user) {
-      console.log("Login!");
       this.isLogin = true;
       this.$store.commit("setUser",user);
       this.userData = user;

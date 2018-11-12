@@ -33,53 +33,15 @@
             </v-flex>
         </v-layout>
 
-        <v-layout
-            column
-            justify-center
+        <TaskRow
+            v-for="(task, index) in tasks"
+            :key="task.id"
+            :task_="task"
+            :index_="index"
+            v-on:clickStartButtomEvent="startTask(task)"
+            v-on:clickStopButtomEvent="stopTask(task)"
         >
-            <v-expansion-panel popout v-model="panel_" expand focusable>
-                <v-expansion-panel-content
-                    v-for="(task, index) in tasks"
-                    :key="task.id"
-                    hide-actions
-                    @click="editTask(index)"
-                >
-                    <v-layout
-                    slot="header"
-                    align-center
-                    row
-                    spacer
-                    >
-                        <v-flex xs4 sm2 md1>
-                            <v-btn icon ripple @click.stop="startTask(task)" v-if="task.isDoing === false && task.endTime==null">
-                                <v-icon color="purple">play_circle_filled</v-icon>
-                            </v-btn>
-                            <v-btn icon ripple @click.stop="startTask(task)" v-else-if="task.isDoing === false && task.endTime!=null">
-                                <v-icon color="grey">play_circle_filled</v-icon>
-                            </v-btn>
-                            <v-btn icon ripple @click.stop="stopTask(task)" v-else-if="task.isDoing === true">
-                                <v-icon color="purple">pause_circle_filled</v-icon>
-                            </v-btn>
-                        </v-flex>
-                        <v-flex nowrap sm5 md5>
-                            <div v-bind:class="{ done: task.endTime!=null}" class="font-weight-bold">
-                                {{ task.title }}
-                            </div>
-                            <div>開始:{{ getTime(task.startTime) }} / 終了: {{ getTime(task.endTime)}} / 実績: {{ task.actualTime }}分 / 見積: {{ task.estimateTime }}分 </div>
-                        </v-flex>
-                        <v-flex xs4 sm2 md1 class="text-xs-right">
-                            <v-btn icon ripple @click.stop="deleteTask(index)">
-                                <v-icon color="grey lighten-1">delete</v-icon>
-                            </v-btn>
-                        </v-flex>
-                    </v-layout>
-                    <v-card>
-                        <v-divider></v-divider>
-                        <TaskEdit v-bind:task_="task" v-bind:index_="index" v-on:endEditEvent="endEditTask"></TaskEdit>
-                    </v-card>
-                </v-expansion-panel-content>
-            </v-expansion-panel>
-        </v-layout>
+        </TaskRow>
     </div>
 </template>
 
@@ -93,22 +55,21 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import firebase,{ firestore } from "firebase";
 import NewTask from "@/components/NewTask.vue";
-import TaskEdit from "@/components/TaskEdit.vue";
+import TaskRow from "@/components/TaskRow.vue";
 import util from "../util/Util";
 import fb from "../util/FirebaseUtil";
 import uuid from 'uuid';
-import { exists } from 'fs';
 import Task from '../lib/Task';
 import TaskController from '../lib/TaskController';
 
 @Component({
   components: {
     NewTask,
-    TaskEdit,
+    TaskRow,
   },
 })
 
-export default class TaskList extends Vue {
+export default class TaskListMain extends Vue {
 
     //編集中のインデックスを保持。どこも編集中じゃ無い場合は-1。
     private editIndex_: number = -1;
@@ -226,14 +187,6 @@ export default class TaskList extends Vue {
         this.tasks[index] = task;
         this.panel_ =[];
         this.save();
-    }
-
-    getTime(time: Date) : string {
-        let timeStr: string = "";
-        if (time != null) {
-            timeStr = util.getTimeString(time);
-        }
-        return timeStr;
     }
 
     created() : void {
