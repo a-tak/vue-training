@@ -19,7 +19,7 @@
                     prepend-icon="event"
                     readonly
                 ></v-text-field>
-                <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" ></v-date-picker>
+                <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
                 </v-menu>
                 </v-flex>
             <v-flex>
