@@ -3,19 +3,19 @@
         <v-layout row fill-height align-center justify-center ma-1>
             <v-flex ma-1>
                 <span>タスク名</span>
-                <v-text-field placeholder="タスク名" single-line outline v-model="task_.title" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
+                <v-text-field placeholder="タスク名" single-line outline v-model="editTask_.title" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
             </v-flex>
             <v-flex ma-1>
                 <span>開始時間</span>
-                <v-text-field placeholder="開始時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="startTime_" clearable autofocus @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
+                <v-text-field placeholder="開始時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="startTime_" clearable @keyup.enter="save"></v-text-field>
             </v-flex>
             <v-flex ma-1>
                 <span>終了時間</span>
-                <v-text-field placeholder="終了時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="endTime_" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
+                <v-text-field placeholder="終了時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="endTime_" clearable  @keyup.enter="save"></v-text-field>
             </v-flex>
             <v-flex ma-1>
                 <span>見積時間(分)</span>
-                <v-text-field placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="task_.estimateTime" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
+                <v-text-field placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="editTask_.estimateTime" clearable @keyup.enter="save"> </v-text-field>
             </v-flex>
         </v-layout>
         <v-layout row fill-height align-center justify-center>
@@ -40,8 +40,6 @@ export default class TaskEdit extends Vue {
 
     canSubmit_: boolean = false;
     menu_: boolean = false;
-    startTime_: string = "";
-    endTime_: string = "";
 
     //!はundefinedやnullにならないことを示すもの
     @Prop() task_!: Task;
@@ -50,25 +48,30 @@ export default class TaskEdit extends Vue {
     @Emit('endEditEvent')
     endEdit(task: Task, index: number): void {}
 
+    startTime_ : string = "";
+    endTime_ : string = "";
     backupedTask_!: Task;
+    editTask_!: Task;
 
     save(): void {
         if (this.startTime_.trim() !="") {
-            this.task_.startTime = Util.getDateObject(this.task_.date, this.startTime_);
+            this.editTask_.startTime = Util.getDateObject(this.task_.date, this.startTime_);
         }else{
-            this.task_.startTime = null;
+            this.editTask_.startTime = null;
         }
 
         if (this.endTime_.trim() !="") {
-            this.task_.endTime = Util.getDateObject(this.task_.date, this.endTime_);
+            this.editTask_.endTime = Util.getDateObject(this.task_.date, this.endTime_);
         }else{
-            this.task_.endTime = null;
+            this.editTask_.endTime = null;
         }
 
-        this.endEdit(this.task_, this.index_);
+        //編集終了イベント発生
+        this.endEdit(this.editTask_, this.index_);
     }
     
     cancel(): void{
+        this.editTask_ = this.backupedTask_;
         this.endEdit(this.backupedTask_, this.index_);
     }
 
@@ -77,8 +80,11 @@ export default class TaskEdit extends Vue {
     }
 
     created(): void {
+        console.log("created!");
         //編集前の値を待避
         this.backupedTask_ = this.task_.copy();
+        //編集用オブジェクト作成
+        this.editTask_ = this.task_.copy();
 
         if (this.task_.startTime!=null) {
             this.startTime_ = Util.get4digitTime(this.task_.startTime);
@@ -86,6 +92,8 @@ export default class TaskEdit extends Vue {
         if (this.task_.endTime!=null) {
             this.endTime_ = Util.get4digitTime(this.task_.endTime);
         }
+        
+        this.estimateTime_ = this.task_.estimateTime;
     }
 
 };

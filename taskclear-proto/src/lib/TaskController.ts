@@ -15,7 +15,6 @@ export default class TaskController {
      */
     createFirestoreLiteral(): ITask[] {
         let literals: ITask[] = []; 
-        console.log("createFirestoreLiteral tasks_" + this.tasks_.length);
         for (const task of this.tasks_) {
             let literal: ITask = {
                 id: task.id,
