@@ -92,10 +92,7 @@ export default class TaskEdit extends Vue {
         if (this.task_.endTime!=null) {
             this.endTime_ = Util.get4digitTime(this.task_.endTime);
         }
-        
-        this.estimateTime_ = this.task_.estimateTime;
     }
-
 };
 </script>
 

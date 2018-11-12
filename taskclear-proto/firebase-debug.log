@@ -1,0 +1,17 @@
+[debug] [2018-11-12T13:00:42.293Z] ----------------------------------------------------------------------
+[debug] [2018-11-12T13:00:42.296Z] Command:       /Users/a-tak/.nodebrew/node/v10.7.0/bin/node /Users/a-tak/.nodebrew/current/bin/firebase deploy
+[debug] [2018-11-12T13:00:42.296Z] CLI Version:   6.0.1
+[debug] [2018-11-12T13:00:42.296Z] Platform:      darwin
+[debug] [2018-11-12T13:00:42.296Z] Node Version:  v10.7.0
+[debug] [2018-11-12T13:00:42.297Z] Time:          Mon Nov 12 2018 22:00:42 GMT+0900 (GMT+09:00)
+[debug] [2018-11-12T13:00:42.297Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-11-12T13:00:42.332Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-11-12T13:00:42.333Z] > authorizing via signed-in user
+[debug] [2018-11-12T13:00:42.333Z] [iam] checking project a-tak-test for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2018-11-12T13:00:42.335Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-11-12T13:00:42.335Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2018-11-12T13:00:42.540Z] <<< HTTP RESPONSE 200
+[debug] [2018-11-12T13:00:42.551Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/a-tak-test:testIamPermissions  
+
