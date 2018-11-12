@@ -61,13 +61,11 @@
                                 <v-icon color="purple">pause_circle_filled</v-icon>
                             </v-btn>
                         </v-flex>
-                        <v-flex sm5 md3>
-                            <span v-bind:class="{ done: task.endTime!=null}">
+                        <v-flex nowrap sm5 md5>
+                            <div v-bind:class="{ done: task.endTime!=null}" class="font-weight-bold">
                                 {{ task.title }}
-                            </span>
-                        </v-flex>
-                        <v-flex nowrap sm5 md3>
-                            <span>開始:{{ getTime(task.startTime) }} / 終了: {{ getTime(task.endTime)}} / 実績: {{ task.actualTime }}分 / 見積: {{ task.estimateTime }}分 </span>
+                            </div>
+                            <div>開始:{{ getTime(task.startTime) }} / 終了: {{ getTime(task.endTime)}} / 実績: {{ task.actualTime }}分 / 見積: {{ task.estimateTime }}分 </div>
                         </v-flex>
                         <v-flex xs4 sm2 md1 class="text-xs-right">
                             <v-btn icon ripple @click.stop="deleteTask(index)">

@@ -36,8 +36,6 @@ export default class TaskController {
     }
 
     loadFirestoreLiteral(fsObjs: ITask[]) : void {
-        console.log("start loadFirestoreLiteral");
-        console.log("fsObj count=" + fsObjs.length);
         this.tasks_ = [];
         for (const fsobj of fsObjs) {
             let task = new Task(fsobj.date.toDate(),fsobj.title);
