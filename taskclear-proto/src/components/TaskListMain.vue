@@ -74,7 +74,6 @@ export default class TaskListMain extends Vue {
 
     //編集中のインデックスを保持。どこも編集中じゃ無い場合は-1。
     private editIndex_: number = -1;
-    private panel_ = [];
 
     get tasks():Task[] {
         return this.$store.getters.taskCtrl.tasks;
@@ -185,8 +184,8 @@ export default class TaskListMain extends Vue {
     }
 
     endEditTask(task: Task, index: number) {
-        this.tasks[index] = task;
-        this.panel_ =[];
+        console.log("endEditTask Event rise=" + index + "task=" + task.title);
+        this.$set(this.tasks, index, task);
         this.save();
     }
 
