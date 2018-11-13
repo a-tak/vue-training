@@ -38,8 +38,9 @@
             :key="task.id"
             :task_="task"
             :index_="index"
-            v-on:clickStartButtomEvent="startTask(task)"
-            v-on:clickStopButtomEvent="stopTask(task)"
+            v-on:clickStartButtomEvent="startTask"
+            v-on:clickStopButtomEvent="stopTask"
+            v-on:endEditEvent="endEditTask"
         >
         </TaskRow>
     </div>

@@ -31,7 +31,7 @@
         </v-layout>
         <v-card>
             <v-divider></v-divider>
-            <TaskEdit v-bind:task_="task_" v-bind:index_="index_" v-on:endEditEvent="endEditTask"></TaskEdit>
+            <TaskEdit v-bind:task_="task_" v-bind:index_="index_" v-on:endEditEvent="endEdit"></TaskEdit>
         </v-card>
     </v-container>
 </template>
@@ -66,6 +66,9 @@ export default class TaskRow extends Vue {
 
     @Emit("clickStopButtomEvent")
     stopTask(task: Task): void{}
+
+    @Emit('endEditEvent')
+    endEdit(task: Task, index: number): void {}
 
 
     getTime(time: Date) : string {
