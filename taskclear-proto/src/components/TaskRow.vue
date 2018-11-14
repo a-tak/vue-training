@@ -1,15 +1,13 @@
 <template>
     <v-container grid-list-md text-xs-center>
         <v-layout
-        slot="header"
         align-center
         row
-        spacer
          v-if="!isEdit_"
         >
             <v-flex>
                 <v-card>
-                    <v-layout row wrap>
+                    <v-layout align-center justify-space-between row fill-height>
                             <v-flex xs4 sm2 md1>
                                 <v-btn icon ripple @click.stop="startTask(task_)" v-if="task_.isDoing === false && task_.endTime==null">
                                     <v-icon color="purple">play_circle_filled</v-icon>
@@ -27,7 +25,9 @@
                                         {{ task_.title }}
                                     </div>
                                 </v-card-actions>
-                                <div>開始:{{ getTime(task_.startTime) }} / 終了: {{ getTime(task_.endTime)}} / 実績: {{ task_.actualTime }}分 / 見積: {{ task_.estimateTime }}分 </div>
+                                <v-card-actions  @click.stop="startEdit()">
+                                    <div>開始:{{ getTime(task_.startTime) }} / 終了: {{ getTime(task_.endTime)}} / 実績: {{ task_.actualTime }}分 / 見積: {{ task_.estimateTime }}分 </div>
+                                </v-card-actions>
                             </v-flex>
                             <v-flex xs4 sm2 md1 class="text-xs-right">
                                 <v-btn icon ripple @click.stop="deleteTask(index_)">
@@ -39,14 +39,11 @@
             </v-flex>
         </v-layout>
         <v-layout
-        slot="header"
         align-center
         row
-        spacer
          v-if="isEdit_"
         >
             <v-card>
-                <v-divider></v-divider>
                 <TaskEdit v-bind:task_="task_" v-bind:index_="index_" v-on:endEditEvent="endEditEvent"></TaskEdit>
             </v-card>
         </v-layout>
@@ -104,7 +101,7 @@ export default class TaskRow extends Vue {
         this.isEdit_ = true;
     }
 
-    endEditEvent(task, index) {
+    endEditEvent(task: Task, index: number) {
         this.isEdit_ = false;
         this.endEdit(task,index);
     }
