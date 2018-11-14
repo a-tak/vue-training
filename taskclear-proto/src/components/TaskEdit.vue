@@ -1,6 +1,6 @@
 <template>
     <div id="task-edit">
-        <v-layout row fill-height align-center justify-center ma-1>
+        <v-layout v-bind="layoutAttributes" fill-height align-center justify-center ma-1>
             <v-flex ma-1>
                 <span>タスク名</span>
                 <v-text-field placeholder="タスク名" single-line outline v-model="editTask_.title" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
@@ -91,6 +91,19 @@ export default class TaskEdit extends Vue {
         }
         if (this.task_.endTime!=null) {
             this.endTime_ = Util.get4digitTime(this.task_.endTime);
+        }
+    }
+
+    //算出プロパティーでオブジェクトを返すと属性を展開してくれる
+    get layoutAttributes() : {} {
+        //画面サイズによって入力ボックスを横に並べるか縦に並べるか切り替える
+        switch (this.$vuetify.breakpoint.name) {
+            case 'xs': return {column: true};
+            case 'sm': return {column: true};
+            case 'md': return {row: true};
+            case 'lg': return {row: true};
+            case 'xl': return {row: true};
+            default  : return {row: true};
         }
     }
 };
