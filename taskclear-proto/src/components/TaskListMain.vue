@@ -41,6 +41,7 @@
             v-on:clickStartButtomEvent="startTask"
             v-on:clickStopButtomEvent="stopTask"
             v-on:endEditEvent="endEditTask"
+            v-on:clickDeleteButtomEvent="deleteTask"
         >
         </TaskRow>
     </div>
@@ -140,6 +141,7 @@ export default class TaskListMain extends Vue {
     }
 
     deleteTask(index: number) : void {
+        console.log("rise deletetask event! " + index);
         this.$store.commit("deleteTask",index);
         this.save();
     }

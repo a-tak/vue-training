@@ -67,6 +67,9 @@ export default class TaskRow extends Vue {
     @Emit("clickStopButtomEvent")
     stopTask(task: Task): void{}
 
+    @Emit("clickDeleteButtomEvent")
+    deleteTask(index: number): void{}
+
     @Emit('endEditEvent')
     endEdit(task: Task, index: number): void {}
 
