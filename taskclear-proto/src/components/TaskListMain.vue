@@ -1,56 +1,91 @@
 <template>
     <div id="tasklist">
-        <v-layout>
-            <v-flex xs12 sm6 md4>
-                <v-menu
-                    :close-on-content-click="false"
-                    v-model="menu2"
-                    :nudge-right="40"
-                    lazy
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    min-width="290px"
+        <template>
+            <div
+                class="hide-overflow"
+                style="position: relative;"
+            >
+                <v-toolbar
+                absolute
+                color="teal lighten-3"
+                dark
+                scroll-target="#scrolling-techniques"
                 >
-                <v-text-field
-                    slot="activator"
-                    v-model="targetDate"
-                    label="日付を選択してください"
-                    prepend-icon="event"
-                    readonly
-                ></v-text-field>
-                <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
-                </v-menu>
-                </v-flex>
-            <v-flex>
-                <v-btn @click="logout">ログアウト</v-btn>
-            </v-flex>
-        </v-layout>
+                <v-toolbar-side-icon></v-toolbar-side-icon>
 
-        <v-layout align-center justify-center row fill-height ma-2>
-            <v-flex>
-                <NewTask></NewTask>
-            </v-flex>
-        </v-layout>
+                <v-toolbar-title>TaskClear</v-toolbar-title>
 
-        <v-slide-y-transition
-                class="py-0"
-                group
-                tag="v-list"
-            >
-            <TaskRow
-                v-for="(task, index) in tasks"
-                :key="task.id"
-                :task_="task"
-                :index_="index"
-                v-on:clickStartButtomEvent="startTask"
-                v-on:clickStopButtomEvent="stopTask"
-                v-on:endEditEvent="endEditTask"
-                v-on:clickDeleteButtomEvent="deleteTask"
-            >
-            </TaskRow>
-        </v-slide-y-transition>
-    </div>
+                <v-spacer></v-spacer>
+
+                <v-btn icon>
+                    <v-icon>more_vert</v-icon>
+                </v-btn>
+                </v-toolbar>
+                <div
+                id="scrolling-techniques"
+                class="scroll-y"
+                style="max-height: 1000px;"
+                >
+                    <v-layout column>
+                        <v-flex><div><br /></div></v-flex>
+                        <v-flex><div><br /></div></v-flex>
+                        <v-flex><div><br /></div></v-flex>
+                        <v-flex><div><br /></div></v-flex>
+                    </v-layout>
+                    <v-layout>
+                        <v-flex xs12 sm6 md4>
+                            <v-menu
+                                :close-on-content-click="false"
+                                v-model="menu2"
+                                :nudge-right="40"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                                min-width="290px"
+                            >
+                            <v-text-field
+                                slot="activator"
+                                v-model="targetDate"
+                                label="日付を選択してください"
+                                prepend-icon="event"
+                                readonly
+                            ></v-text-field>
+                            <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
+                            </v-menu>
+                            </v-flex>
+                        <v-flex>
+                            <v-btn @click="logout">ログアウト</v-btn>
+                        </v-flex>
+                    </v-layout>
+
+                    <v-layout align-center justify-center row fill-height ma-2>
+                        <v-flex>
+                            <NewTask></NewTask>
+                        </v-flex>
+                    </v-layout>
+
+                    <v-slide-y-transition
+                            class="py-0"
+                            group
+                            tag="v-list"
+                        >
+                        <TaskRow
+                            v-for="(task, index) in tasks"
+                            :key="task.id"
+                            :task_="task"
+                            :index_="index"
+                            v-on:clickStartButtomEvent="startTask"
+                            v-on:clickStopButtomEvent="stopTask"
+                            v-on:endEditEvent="endEditTask"
+                            v-on:clickDeleteButtomEvent="deleteTask"
+                        >
+                        </TaskRow>
+                    </v-slide-y-transition>
+                </div>
+            </div>
+    </template>
+  </div>
 </template>
 
 <style>

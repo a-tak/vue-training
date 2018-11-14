@@ -1,12 +1,10 @@
 <template>
   <v-app>
-    <v-toolbar><v-toolbar-title>Task Clear</v-toolbar-title></v-toolbar>
-      <v-content>
-        <v-container fluid>
-          <router-view/>
-        </v-container>
-      </v-content>
-    <v-footer>a-tak.com 2018</v-footer>
+    <v-content>
+      <v-container fluid>
+        <router-view/>
+      </v-container>
+    </v-content>
   </v-app>
 </template>
 
