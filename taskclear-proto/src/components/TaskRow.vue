@@ -3,7 +3,7 @@
         <v-layout
         align-center
         row
-         v-if="!isEdit_"
+        v-if="!isEdit_"
         >
             <v-flex>
                 <v-card>
@@ -41,7 +41,7 @@
         <v-layout
         align-center
         row
-         v-if="isEdit_"
+        v-if="isEdit_"
         >
             <v-card>
                 <TaskEdit v-bind:task_="task_" v-bind:index_="index_" v-on:endEditEvent="endEditEvent"></TaskEdit>

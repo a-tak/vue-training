@@ -33,17 +33,23 @@
             </v-flex>
         </v-layout>
 
-        <TaskRow
-            v-for="(task, index) in tasks"
-            :key="task.id"
-            :task_="task"
-            :index_="index"
-            v-on:clickStartButtomEvent="startTask"
-            v-on:clickStopButtomEvent="stopTask"
-            v-on:endEditEvent="endEditTask"
-            v-on:clickDeleteButtomEvent="deleteTask"
-        >
-        </TaskRow>
+        <v-slide-y-transition
+                class="py-0"
+                group
+                tag="v-list"
+            >
+            <TaskRow
+                v-for="(task, index) in tasks"
+                :key="task.id"
+                :task_="task"
+                :index_="index"
+                v-on:clickStartButtomEvent="startTask"
+                v-on:clickStopButtomEvent="stopTask"
+                v-on:endEditEvent="endEditTask"
+                v-on:clickDeleteButtomEvent="deleteTask"
+            >
+            </TaskRow>
+        </v-slide-y-transition>
     </div>
 </template>
 
