@@ -9,7 +9,6 @@
 
             <v-toolbar-title>TaskClear</v-toolbar-title>
 
-
             <v-btn @click="logout">ログアウト</v-btn>
             <v-spacer></v-spacer>
             <v-btn icon>
@@ -19,25 +18,30 @@
             </v-toolbar>
             <div
             >
-            <v-menu
-                :close-on-content-click="false"
-                v-model="menu2"
-                :nudge-right="40"
-                lazy
-                transition="scale-transition"
-                offset-y
-                full-width
-                min-width="290px"
-            >
-            <v-text-field
-                slot="activator"
-                v-model="targetDate"
-                label="日付を選択してください"
-                prepend-icon="event"
-                readonly
-            ></v-text-field>
-            <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
-            </v-menu>
+            <v-card>
+                <v-menu
+                    :close-on-content-click="false"
+                    v-model="menu2"
+                    :nudge-right="40"
+                    lazy
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    min-width="290px"
+                >
+                <v-text-field
+                    slot="activator"
+                    v-model="targetDate"
+                    label="日付を選択してください"
+                    prepend-icon="event"
+                    readonly
+                ></v-text-field>
+                <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
+                </v-menu>
+            </v-card>
+            <v-btn fab dark color="indigo" fixed>
+                <v-icon dark>add</v-icon>
+            </v-btn>
 
             <NewTask></NewTask>
 
