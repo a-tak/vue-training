@@ -184,8 +184,9 @@ export default class TaskListMain extends Vue {
         //開始しているタスクがあれば中断処理する
         for (const otherTask of this.tasks) {
             if (otherTask.isDoing == true) {
-                this.stopTask(otherTask);
                 this.tasks.push(otherTask.createPauseTask());
+                otherTask.title = otherTask.title + "(中断)";
+                this.stopTask(otherTask);
             }
         }
 
