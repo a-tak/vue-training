@@ -1,81 +1,63 @@
 <template>
     <div id="tasklist">
         <template>
-            <div
-                class="hide-overflow"
-                style="position: relative;"
+            <v-toolbar
+            color="teal lighten-3"
+            dark
             >
-                <v-toolbar
-                absolute
-                color="teal lighten-3"
-                dark
-                extended
-                scroll-target="#scrolling-techniques"
-                >
-                <v-toolbar-side-icon></v-toolbar-side-icon>
+            <v-toolbar-side-icon></v-toolbar-side-icon>
 
-                <v-toolbar-title>TaskClear</v-toolbar-title>
+            <v-toolbar-title>TaskClear</v-toolbar-title>
 
-                <v-menu
-                    :close-on-content-click="false"
-                    v-model="menu2"
-                    :nudge-right="40"
-                    lazy
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    min-width="290px"
-                >
-                <v-text-field
-                    slot="activator"
-                    v-model="targetDate"
-                    label="日付を選択してください"
-                    prepend-icon="event"
-                    readonly
-                ></v-text-field>
-                <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
-                </v-menu>
 
-                <NewTask></NewTask>
+            <v-btn @click="logout">ログアウト</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn icon>
+                <v-icon>more_vert</v-icon>
+            </v-btn>
 
-                <v-btn @click="logout">ログアウト</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn icon>
-                    <v-icon>more_vert</v-icon>
-                </v-btn>
+            </v-toolbar>
+            <div
+            >
+            <v-menu
+                :close-on-content-click="false"
+                v-model="menu2"
+                :nudge-right="40"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+            >
+            <v-text-field
+                slot="activator"
+                v-model="targetDate"
+                label="日付を選択してください"
+                prepend-icon="event"
+                readonly
+            ></v-text-field>
+            <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
+            </v-menu>
 
-                </v-toolbar>
-                <div
-                id="scrolling-techniques"
-                class="scroll-y"
-                style="max-height: 1000px;"
-                >
-                    <v-layout column>
-                        <v-flex>test</v-flex>
-                        <v-flex>test</v-flex>
-                        <v-flex>test</v-flex>
-                        <v-flex>test</v-flex>
-                        <v-flex>test</v-flex>
-                        <v-flex>test</v-flex>
-                    </v-layout>
-                    <v-slide-y-transition
-                            class="py-0"
-                            group
-                            tag="v-list"
-                        >
-                        <TaskRow
-                            v-for="(task, index) in tasks"
-                            :key="task.id"
-                            :task_="task"
-                            :index_="index"
-                            v-on:clickStartButtomEvent="startTask"
-                            v-on:clickStopButtomEvent="stopTask"
-                            v-on:endEditEvent="endEditTask"
-                            v-on:clickDeleteButtomEvent="deleteTask"
-                        >
-                        </TaskRow>
-                    </v-slide-y-transition>
-                </div>
+            <NewTask></NewTask>
+
+                <v-slide-y-transition
+                        class="py-0"
+                        group
+                        tag="v-list"
+                    >
+                    <TaskRow
+                        v-for="(task, index) in tasks"
+                        :key="task.id"
+                        :task_="task"
+                        :index_="index"
+                        v-on:clickStartButtomEvent="startTask"
+                        v-on:clickStopButtomEvent="stopTask"
+                        v-on:endEditEvent="endEditTask"
+                        v-on:clickDeleteButtomEvent="deleteTask"
+                    >
+                    </TaskRow>
+                </v-slide-y-transition>
             </div>
     </template>
   </div>
