@@ -1,69 +1,65 @@
 <template>
     <div id="tasklist">
-        <template>
-            <v-toolbar
-            color="teal lighten-3"
-            dark
+        <v-toolbar
+        color="teal lighten-3"
+        dark
+        >
+        <v-toolbar-side-icon></v-toolbar-side-icon>
+
+        <v-toolbar-title>TaskClear</v-toolbar-title>
+
+        <v-btn @click="logout">ログアウト</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn icon>
+            <v-icon>more_vert</v-icon>
+        </v-btn>
+
+        </v-toolbar>
+        <div
+        >
+        <v-card>
+            <v-menu
+                :close-on-content-click="false"
+                v-model="menu2"
+                :nudge-right="40"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
             >
-            <v-toolbar-side-icon></v-toolbar-side-icon>
-
-            <v-toolbar-title>TaskClear</v-toolbar-title>
-
-            <v-btn @click="logout">ログアウト</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn icon>
-                <v-icon>more_vert</v-icon>
-            </v-btn>
-
-            </v-toolbar>
-            <div
-            >
-            <v-card>
-                <v-menu
-                    :close-on-content-click="false"
-                    v-model="menu2"
-                    :nudge-right="40"
-                    lazy
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    min-width="290px"
+            <v-text-field
+                slot="activator"
+                v-model="targetDate"
+                label="日付を選択してください"
+                prepend-icon="event"
+                readonly
+            ></v-text-field>
+            <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
+            </v-menu>
+        </v-card>
+        <v-btn fab dark color="red" fixed floating bottom right @click="addTask()">
+            <v-icon dark>add</v-icon>
+        </v-btn>
+            <v-slide-y-transition
+                    class="py-0"
+                    group
+                    tag="v-list"
                 >
-                <v-text-field
-                    slot="activator"
-                    v-model="targetDate"
-                    label="日付を選択してください"
-                    prepend-icon="event"
-                    readonly
-                ></v-text-field>
-                <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
-                </v-menu>
-            </v-card>
-            <v-btn fab dark color="indigo" fixed>
-                <v-icon dark>add</v-icon>
-            </v-btn>
-
-            <NewTask></NewTask>
-
-                <v-slide-y-transition
-                        class="py-0"
-                        group
-                        tag="v-list"
-                    >
-                    <TaskRow
-                        v-for="(task, index) in tasks"
-                        :key="task.id"
-                        :task_="task"
-                        :index_="index"
-                        v-on:clickStartButtomEvent="startTask"
-                        v-on:clickStopButtomEvent="stopTask"
-                        v-on:endEditEvent="endEditTask"
-                        v-on:clickDeleteButtomEvent="deleteTask"
-                    >
-                    </TaskRow>
-                </v-slide-y-transition>
-            </div>
-    </template>
+                <TaskRow
+                    v-for="(task, index) in tasks"
+                    :key="task.id"
+                    :task_="task"
+                    :index_="index"
+                    v-on:clickStartButtomEvent="startTask"
+                    v-on:clickStopButtomEvent="stopTask"
+                    v-on:endEditEvent="endEditTask"
+                    v-on:clickDeleteButtomEvent="deleteTask"
+                >
+                </TaskRow>
+            </v-slide-y-transition>
+            <NewTask v-if="addingTask_" v-on:addedEvent="addedTask"></NewTask>
+        </div>
   </div>
 </template>
 
@@ -93,8 +89,7 @@ import TaskController from '../lib/TaskController';
 
 export default class TaskListMain extends Vue {
 
-    //編集中のインデックスを保持。どこも編集中じゃ無い場合は-1。
-    private editIndex_: number = -1;
+    private addingTask_: boolean = false;
 
     get tasks():Task[] {
         return this.$store.getters.taskCtrl.tasks;
@@ -161,7 +156,6 @@ export default class TaskListMain extends Vue {
     }
 
     deleteTask(index: number) : void {
-        console.log("rise deletetask event! " + index);
         this.$store.commit("deleteTask",index);
         this.save();
     }
@@ -202,10 +196,6 @@ export default class TaskListMain extends Vue {
         fb.saveTasks(this.$store.getters.user.uid, this.$store.getters.targetDate,this.$store.getters.taskCtrl);
     }
 
-    editTask(index: number) {
-        this.editIndex_ = index;
-    }
-
     endEditTask(task: Task, index: number) {
         console.log("endEditTask Event rise=" + index + "task=" + task.title);
         this.$set(this.tasks, index, task);
@@ -218,6 +208,17 @@ export default class TaskListMain extends Vue {
 
     logout() : void {
         firebase.auth().signOut();
+    }
+
+    addTask() : void {
+        this.addingTask_ = true;
+        this.$nextTick(function(){
+            this.$vuetify.goTo("#newtask", {duration: 350, easing: "easeInOutCubic"})
+        });
+    }
+
+    addedTask() : void {
+        this.addingTask_ = false;
     }
 }
 </script>

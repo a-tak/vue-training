@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Emit } from 'vue-property-decorator';
 import firebase,{ firestore } from 'firebase';
 import uuid from 'uuid';
 import util from '../util/Util';
@@ -25,6 +25,9 @@ import Task from '../lib/Task';
 @Component
 export default class NewTask extends Vue {
 
+  @Emit('addedEvent')
+  addEnd(): void {}
+
   inputvalue_: string = "";
   canSubmit_: boolean = false;
 
@@ -33,6 +36,7 @@ export default class NewTask extends Vue {
   }
 
   addTask() : void {
+    console.log("addtask cansubmit=" + this.canSubmit_);
     if (this.inputvalue_.trim()=="" || this.canSubmit_ == false) return;
 
     //ここがタスクの追加部分
@@ -46,6 +50,9 @@ export default class NewTask extends Vue {
 
     this.inputvalue_ = "";
     this.canSubmit_ = false;
+
+    //イベント発生
+    this.addEnd();
 
   }
 
