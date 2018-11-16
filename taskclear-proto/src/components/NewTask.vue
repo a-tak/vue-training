@@ -3,7 +3,7 @@
       <v-card>
         <v-layout row fill-height align-center justify-center>
             <v-flex mt-4 ml-2>
-                <v-text-field placeholder="新しいタスクを追加" single-line outline v-model="inputvalue_" clearable hint="記載したらEnterか追加ボタン" @keyup.enter="addTask" @keypress="setCanSubmit"></v-text-field>
+                <v-text-field placeholder="新しいタスクを追加" single-line outline v-model="inputvalue_" autofocus clearable hint="記載したらEnterか追加ボタン" @keyup.enter="addTask" @keypress="setCanSubmit"></v-text-field>
             </v-flex>
             <v-flex ma-2>
                 <v-btn @click="addTask">追加</v-btn>
