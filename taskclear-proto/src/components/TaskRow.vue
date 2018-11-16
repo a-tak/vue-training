@@ -1,5 +1,5 @@
 <template>
-    <v-container grid-list-md text-xs-center>
+    <v-container grid-list-md text-xs-center pa-2>
         <v-layout
         align-center
         row
