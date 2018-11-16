@@ -29,6 +29,7 @@
                                 <div>開始:{{ getTime(task_.startTime) }} / 終了: {{ getTime(task_.endTime)}} / 実績: {{ task_.actualTime }}分 / 見積: {{ task_.estimateTime }}分 </div>
                             </v-card-actions>
                         </v-flex>
+                        <v-spacer></v-spacer>
                         <v-flex xs4 sm2 md1 class="text-xs-right">
                             <v-btn icon ripple @click.stop="deleteTask(index_)">
                                 <v-icon color="grey lighten-1">delete</v-icon>
