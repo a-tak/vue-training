@@ -2,7 +2,6 @@
     <div id="tasklist">
         <v-toolbar
         color="teal lighten-3"
-        dark
         >
         <v-toolbar-side-icon></v-toolbar-side-icon>
 
@@ -59,6 +58,23 @@
                 </TaskRow>
             </v-slide-y-transition>
             <NewTask v-if="addingTask_" v-on:addedEvent="addedTask"></NewTask>
+        </div>
+        <div>
+            <v-footer
+                color="teal lighten-3"
+                height="auto"
+                class="mt-2"
+            >
+                <v-card
+                    flat
+                    tile
+                    color="teal lighten-3"
+                >
+                    <v-card-text>
+                        &copy;2019 a-tak.com
+                    </v-card-text>
+                </v-card>
+            </v-footer> 
         </div>
   </div>
 </template>
