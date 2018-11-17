@@ -31,6 +31,24 @@
                         </v-flex>
                         <v-spacer></v-spacer>
                         <v-flex xs4 sm2 md1 class="text-xs-right">
+                            <v-menu
+                                :close-on-content-click="true"
+                                v-model="displayedTaskCal"
+                                :nudge-right="40"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                                min-width="290px"
+                            >
+                            <v-btn slot="activator" icon ripple @click.stop="displayedTaskCal = !displayedTaskCal">
+                                <v-icon color="grey lighten-1">calendar_today</v-icon>
+                            </v-btn>
+
+                            <v-date-picker v-model="targetDate" @input="displayedTaskCal = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
+                            </v-menu>
+                        </v-flex>
+                        <v-flex xs4 sm2 md1 class="text-xs-right">
                             <v-btn icon ripple @click.stop="deleteTask(index_)">
                                 <v-icon color="grey lighten-1">delete</v-icon>
                             </v-btn>
@@ -88,7 +106,36 @@ export default class TaskRow extends Vue {
     @Emit('endEditEvent')
     endEdit(task: Task, index: number): void {}
 
+    /**
+     * タスクの日付が変更された時の処理
+     */
+    @Watch("targetDate")
+    onValueChange(newValue: string,oldValue: string): void {
+
+    }
+
     private isEdit_: boolean = false;
+
+    private displayedTaskCal_: boolean = false;
+    get displayedTaskCal() : boolean{
+        return this.displayedTaskCal_;
+    }
+    set displayedTaskCal(value: boolean) {
+        console.log("targetDate_=" + this.targetDate_);
+        this.displayedTaskCal_ = value;
+    }
+
+    private targetDate_:Date = new Date();
+    get targetDate(): string {
+      return this.$store.getters.targetDate.toISOString().substr(0, 10)
+    }
+    /**
+     * 特殊だけどセットするときはストアに値をセットしたいわけではないのでインスタンス変数に入れる
+     * あとでもう少し考える
+     */
+    set targetDate(value:string) {
+        this.targetDate_ = new Date(value);
+    }
 
     getTime(time: Date) : string {
         let timeStr: string = "";
