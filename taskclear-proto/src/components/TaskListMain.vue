@@ -79,6 +79,7 @@ import fb from "../util/FirebaseUtil";
 import uuid from 'uuid';
 import Task from '../lib/Task';
 import TaskController from '../lib/TaskController';
+import { truncate } from 'fs';
 
 @Component({
   components: {
@@ -170,9 +171,17 @@ export default class TaskListMain extends Vue {
             }
         }
 
-        task.isDoing = true;
-        task.startTime = new Date;
-
+        //既に終了しているタスクであればコピーしてタスクを開始する
+        if (task.endTime!=null) {
+            let newTask: Task = task.createPauseTask();
+            newTask.isDoing = true;
+            newTask.startTime = new Date();
+            newTask.endTime = null;
+            this.$store.commit("addTask",newTask);
+        }else{
+            task.isDoing = true;
+            task.startTime = new Date();
+        }
         this.tasks.sort(function(a: Task,b: Task){
             if (a.startTime == null) {
                 return 1;

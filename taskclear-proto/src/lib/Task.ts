@@ -51,6 +51,7 @@ export default class Task {
 
     /**
      * 中断タスクを作成
+     * 元のタスクの見積から実績を引いた残り時間を入れて新たなタスクを戻す
      */
     createPauseTask(): Task {
         let newTask: Task = new Task(this.date_,this.title);
@@ -67,6 +68,7 @@ export default class Task {
     /**
      * タスクをコピー
      * キャンセル機能などで元の値を待避するために使用
+     * IDも同じものがコピーされるので重複が起きないように注意が必要
      */
     copy(): Task {
         let newTask: Task = new Task(this.date_,this.title);
