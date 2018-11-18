@@ -10,4 +10,27 @@ export default class FirebaseUtil {
         firebase.firestore().collection("users").doc(uid)
         .collection("date").doc(util.getDateString(d)).set({ tasks: taskctrl.createFirestoreLiteral() });
     }
+
+    static loadTasks(uid: string, date: Date) : TaskController {
+        let tc = new TaskController();
+
+        firebase
+        .firestore()
+        .collection("users")
+        .doc(uid)
+        .collection("date")
+        .doc(util.getDateString(date))
+        .get()
+        .then(doc => {
+            if (doc.exists) {
+                const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
+                if (firedoc !== undefined ) {
+                    if (firedoc.tasks != undefined) {
+                        return tc.loadFirestoreLiteral(firedoc.tasks);
+                    }
+                }
+            }
+        });
+        return tc;
+    } 
 }

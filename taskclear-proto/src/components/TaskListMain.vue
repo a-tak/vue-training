@@ -53,7 +53,8 @@
                     v-on:clickStartButtomEvent="startTask"
                     v-on:clickStopButtomEvent="stopTask"
                     v-on:endEditEvent="endEditTask"
-                    v-on:clickDeleteButtomEvent="deleteTask"
+                    v-on:clickDeleteButtomEvent="deleteTaskByIndex"
+                    v-on:changeTaskDateChangeEvent="changeTaskDate"
                 >
                 </TaskRow>
             </v-slide-y-transition>
@@ -119,7 +120,7 @@ export default class TaskListMain extends Vue {
     }
 
     get targetDate(): string {
-      return this.$store.getters.targetDate.toISOString().substr(0, 10)
+      return util.getDateString(this.$store.getters.targetDate);
     }
 
     set targetDate(value:string) {
@@ -144,36 +145,12 @@ export default class TaskListMain extends Vue {
 
     loadTasks() : void {
         console.log("getTasks start!");
-        firebase
-        .firestore()
-        .collection("users")
-        .doc(this.$store.getters.user.uid)
-        .collection("date")
-        .doc(util.getDateString(this.$store.getters.targetDate))
-        .get()
-        .then(doc => {
-            let tc = new TaskController();
-            if (doc.exists) {
-                // ここどうにかするし、エラーになる
-                const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
-                if (firedoc !== undefined ) {
-                    if (firedoc.tasks != undefined) {
-                        tc.loadFirestoreLiteral(firedoc.tasks)
-                        this.$store.commit("setTaskCtrl", tc);
-                    }else{
-                        this.$store.commit("setTaskCtrl",tc);
-                    }
-                } else {
-                    this.$store.commit("setTaskCtrl",tc);
-                }
-            }else{
-                this.$store.commit("setTaskCtrl",tc);
-            }
-        });
+        this.$store.commit("setTaskCtrl",
+         fb.loadTasks(this.$store.getters.user.uid, this.$store.getters.targetDate));
     }
 
-    deleteTask(index: number) : void {
-        this.$store.commit("deleteTask",index);
+    deleteTaskByIndex(index: number) : void {
+        this.$store.commit("deleteTaskByIndex",index);
         this.save();
     }
 
@@ -244,6 +221,23 @@ export default class TaskListMain extends Vue {
 
     addedTask() : void {
         this.addingTask_ = false;
+    }
+
+    changeTaskDate(task: Task): void {
+        console.log("Raise changeTaskDateChangeEvent");
+        
+        //編集中の日付と同じならば何もしない
+        if (util.getDateString(task.date) == this.targetDate) return;
+
+        //変更先の日付のdocを取ってくる
+        let tc = fb.loadTasks(this.$store.getters.user.uid,task.date);
+
+        //タスクを追加してsave
+        tc.tasks.push(task);
+        fb.saveTasks(this.$store.getters.user.uid,task.date,tc);
+
+        //今開いている日付のdocから削除
+        this.$store.commit("deleteTask",task);
     }
 }
 </script>

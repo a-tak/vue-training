@@ -45,7 +45,7 @@
                                 <v-icon color="grey lighten-1">calendar_today</v-icon>
                             </v-btn>
 
-                            <v-date-picker v-model="targetDate" @input="displayedTaskCal = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
+                            <v-date-picker v-model="targetDate" @input="selectDate()" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
                             </v-menu>
                         </v-flex>
                         <v-flex xs4 sm2 md1 class="text-xs-right">
@@ -106,13 +106,8 @@ export default class TaskRow extends Vue {
     @Emit('endEditEvent')
     endEdit(task: Task, index: number): void {}
 
-    /**
-     * タスクの日付が変更された時の処理
-     */
-    @Watch("targetDate")
-    onValueChange(newValue: string,oldValue: string): void {
-
-    }
+    @Emit('changeTaskDateChangeEvent')
+    changeDate(task: Task): void {}
 
     private isEdit_: boolean = false;
 
@@ -127,14 +122,11 @@ export default class TaskRow extends Vue {
 
     private targetDate_:Date = new Date();
     get targetDate(): string {
-      return this.$store.getters.targetDate.toISOString().substr(0, 10)
+      return this.task_.date.toISOString().substr(0, 10);
     }
-    /**
-     * 特殊だけどセットするときはストアに値をセットしたいわけではないのでインスタンス変数に入れる
-     * あとでもう少し考える
-     */
+
     set targetDate(value:string) {
-        this.targetDate_ = new Date(value);
+        this.task_.date = new Date(value);
     }
 
     getTime(time: Date) : string {
@@ -152,6 +144,14 @@ export default class TaskRow extends Vue {
     endEditEvent(task: Task, index: number) {
         this.isEdit_ = false;
         this.endEdit(task,index);
+    }
+
+    /** 
+     * タスクの日付を変更
+     */
+    selectDate() : void {
+        this.displayedTaskCal = false;
+        this.changeDate(this.task_);
     }
 
 }

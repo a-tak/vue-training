@@ -22,7 +22,12 @@ export default new Vuex.Store({
     addTask(state, task:Task) {
       state.taskCtrl.tasks.push(task);
     },
-    deleteTask(state, index: number) {
+    deleteTask(state, task:Task) {
+      const index = state.taskCtrl.tasks.indexOf(task);
+      //todo deleteTaskByIndexと同じロジック。他のmutation呼び出せないか?
+      state.taskCtrl.tasks.splice(index,1);
+    },
+    deleteTaskByIndex(state, index: number) {
       state.taskCtrl.tasks.splice(index,1);
     },
     setTaskCtrl(state, taskCtrl:TaskController) {
@@ -41,3 +46,6 @@ export default new Vuex.Store({
 
   }
 })
+
+
+

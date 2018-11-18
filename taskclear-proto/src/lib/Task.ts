@@ -73,6 +73,7 @@ export default class Task {
     copy(): Task {
         let newTask: Task = new Task(this.date_,this.title);
         newTask.id = this.id_;
+        newTask.date = this.date_;
         newTask.isDoing = this.isDoing_;
         newTask.startTime = this.startTime_;
         newTask.endTime = this.endTime_;
