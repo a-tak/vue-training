@@ -15,7 +15,7 @@
             </v-flex>
             <v-flex ma-1>
                 <span>見積時間(分)</span>
-                <v-text-field type="tel" placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="editTask_.estimateTime" clearable @keyup.enter="save"> </v-text-field>
+                <v-text-field type="tel" placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="estimateTime_" clearable @keyup.enter="save"> </v-text-field>
             </v-flex>
         </v-layout>
         <v-layout row fill-height align-center justify-center>
@@ -50,6 +50,7 @@ export default class TaskEdit extends Vue {
 
     startTime_ : string = "";
     endTime_ : string = "";
+    estimateTime_ : string ="";
     backupedTask_!: Task;
     editTask_!: Task;
 
@@ -64,6 +65,12 @@ export default class TaskEdit extends Vue {
             this.editTask_.endTime = Util.getDateObject(this.task_.date, this.endTime_);
         }else{
             this.editTask_.endTime = null;
+        }
+
+        if (Util.isNumber(this.estimateTime_)) {
+            this.editTask_.estimateTime = Number(this.estimateTime_);
+        } else {
+            this.editTask_.estimateTime = 0;
         }
 
         //編集終了イベント発生
@@ -92,6 +99,11 @@ export default class TaskEdit extends Vue {
         if (this.task_.endTime!=null) {
             this.endTime_ = Util.get4digitTime(this.task_.endTime);
         }
+
+        if (this.task_.estimateTime!=null) {
+            this.estimateTime_ = this.task_.estimateTime.toString();
+        }
+
     }
 
     //算出プロパティーでオブジェクトを返すと属性を展開してくれる

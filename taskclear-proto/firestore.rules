@@ -1,10 +1,9 @@
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /memos/{user_id} {
-      allow read, write: if request.auth.uid == user_id;
-    }
     match /users/{user_id}/date/{date} {
       allow read, write: if request.auth.uid == user_id;
+      allow create: if request.resource.data.estimateTime is number;
+      allow create: if request.resource.data.actualTime is number;
     }
   }
 }

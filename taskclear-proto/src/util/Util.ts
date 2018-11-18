@@ -49,4 +49,10 @@ export default class Util {
         console.log("dateStr=" + dateStr);
         return new Date(dateStr);
     }
+
+    static isNumber(value: string | number): boolean
+    {
+        return !isNaN(Number(value.toString()));
+    }
+
 }
