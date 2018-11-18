@@ -27,13 +27,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator';
+import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator';
 import TaskController from '../lib/TaskController';
 import Util from '../util/Util';
 import { firestore } from 'firebase';
 
 @Component
 export default class EstimateList extends Vue {
+
+    @Watch("targetDate")
+    onValueChange(newValue: string,oldValue: string): void {
+        this.display();
+    }
+
+    public get targetDate() : Date {
+        return this.$store.getters.targetDate;
+    }    
 
     private estimates_: Estimate[]= [];
 
@@ -46,14 +55,14 @@ export default class EstimateList extends Vue {
     }
 
     display() : void {
-
         let fsdsPromises: Promise<firebase.firestore.DocumentSnapshot>[] = new Array(6);
+        this.estimates_ = [];
 
         for (let n=0; n<=6; n++) {
             // 一日ずつ日付を進めてデータを取得
             let tc: TaskController = new TaskController();
             let targetDate: Date = new Date();
-            targetDate.setDate(this.$store.getters.targetDate.getDate() + n);
+            targetDate.setDate(this.targetDate.getDate() + n);
             console.log("display 1");
 
             //Promiseを配列に溜めておく
