@@ -31,8 +31,6 @@ export default new Vuex.Store({
       state.taskCtrl.tasks.splice(index,1);
     },
     setTaskCtrl(state, taskCtrl:TaskController) {
-      console.log("setTaskCtrl =" + taskCtrl);
-      console.log("setTaskCtrl count=" + taskCtrl.tasks.length);
       state.taskCtrl = taskCtrl;
     },
     setUser(state, user) {

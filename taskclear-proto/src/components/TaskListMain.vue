@@ -14,29 +14,35 @@
         </v-btn>
 
         </v-toolbar>
-        <div
-        >
-        <v-card>
-            <v-menu
-                :close-on-content-click="false"
-                v-model="menu2"
-                :nudge-right="40"
-                lazy
-                transition="scale-transition"
-                offset-y
-                full-width
-                min-width="290px"
-            >
-            <v-text-field
-                slot="activator"
-                v-model="targetDate"
-                label="日付を選択してください"
-                prepend-icon="event"
-                readonly
-            ></v-text-field>
-            <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
-            </v-menu>
-        </v-card>
+        <div>
+        <v-layout v-bind="topRowLayoutAttributes" fill-height>
+            <v-flex>
+                <v-card>
+                    <v-menu
+                        :close-on-content-click="false"
+                        v-model="menu2"
+                        :nudge-right="40"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        min-width="290px"
+                    >
+                    <v-text-field
+                        slot="activator"
+                        v-model="targetDate"
+                        label="日付を選択してください"
+                        prepend-icon="event"
+                        readonly
+                    ></v-text-field>
+                    <v-date-picker v-model="targetDate" @input="menu2 = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
+                    </v-menu>
+                </v-card>
+            </v-flex>
+            <v-flex>
+                <EstimateList></EstimateList>
+            </v-flex>
+        </v-layout>
         <v-btn fab dark color="red" fixed floating bottom right @click="addTask()">
             <v-icon dark>add</v-icon>
         </v-btn>
@@ -91,6 +97,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import firebase,{ firestore } from "firebase";
 import NewTask from "@/components/NewTask.vue";
 import TaskRow from "@/components/TaskRow.vue";
+import EstimateList from "@/components/EstimateList.vue";
 import util from "../util/Util";
 import fb from "../util/FirebaseUtil";
 import uuid from 'uuid';
@@ -102,6 +109,7 @@ import { truncate } from 'fs';
   components: {
     NewTask,
     TaskRow,
+    EstimateList,
   },
 })
 
@@ -144,7 +152,6 @@ export default class TaskListMain extends Vue {
     }
 
     loadTasks() : void {
-        console.log("getTasks start!");
         this.$store.commit("setTaskCtrl",
          fb.loadTasks(this.$store.getters.user.uid, this.$store.getters.targetDate));
     }
@@ -199,7 +206,6 @@ export default class TaskListMain extends Vue {
     }
 
     endEditTask(task: Task, index: number) {
-        console.log("endEditTask Event rise=" + index + "task=" + task.title);
         if (task.endTime!=null) {
             task.isDoing = false;
         }
@@ -227,7 +233,6 @@ export default class TaskListMain extends Vue {
     }
 
     changeTaskDate(task: Task): void {
-        console.log("Raise changeTaskDateChangeEvent");
         
         //編集中の日付と同じならば何もしない
         if (util.getDateString(task.date) == this.targetDate) return;
@@ -242,5 +247,18 @@ export default class TaskListMain extends Vue {
         //今開いている日付のdocから削除
         this.$store.commit("deleteTask",task);
     }
+
+    get topRowLayoutAttributes() : {} {
+        //画面サイズによって入力ボックスを横に並べるか縦に並べるか切り替える
+        switch (this.$vuetify.breakpoint.name) {
+            case 'xs': return {column: true};
+            case 'sm': return {column: true};
+            case 'md': return {row: true};
+            case 'lg': return {row: true};
+            case 'xl': return {row: true};
+            default  : return {row: true};
+        }
+}
+
 }
 </script>

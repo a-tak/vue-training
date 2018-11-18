@@ -11,7 +11,13 @@ export default class FirebaseUtil {
         .collection("date").doc(util.getDateString(d)).set({ tasks: taskctrl.createFirestoreLiteral() });
     }
 
+    /**
+     * Firestoreからデータを読み込み結果を返す
+     * @param uid 
+     * @param date 
+     */
     static loadTasks(uid: string, date: Date) : TaskController {
+        console.log("loadTasks 1");
         let tc = new TaskController();
 
         firebase
@@ -23,14 +29,22 @@ export default class FirebaseUtil {
         .get()
         .then(doc => {
             if (doc.exists) {
+                console.log("loadTasks 2");
+
                 const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
-                if (firedoc !== undefined ) {
-                    if (firedoc.tasks != undefined) {
-                        return tc.loadFirestoreLiteral(firedoc.tasks);
-                    }
+                if (firedoc !== undefined && firedoc.tasks != undefined) {
+                    tc.loadFirestoreLiteral(firedoc.tasks);
+                } else {
+                    console.log("doc undefined?");
                 }
+            } else {
+                console.log("no such document");
             }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
         });
+        console.log("loadTasks 3");
+
         return tc;
     } 
 }

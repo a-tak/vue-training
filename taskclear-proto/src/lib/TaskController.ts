@@ -34,6 +34,11 @@ export default class TaskController {
        return literals;
     }
 
+    /**
+     * Firestoreからのオブジェクト配列をTaskの配列に変換して自分にセットする
+     * Firestoreからのデータ読み込み時に使用する
+     * @param fsObjs 
+     */
     loadFirestoreLiteral(fsObjs: ITask[]) : void {
         this.tasks_ = [];
         for (const fsobj of fsObjs) {
@@ -59,6 +64,17 @@ export default class TaskController {
             }
             this.tasks_.push(task);
         }
-        console.log("tasks_ count" + this.tasks_.length);
+    }
+
+    /**
+     * 見積時間の合計(分)を返す
+     */
+    getEstimateSum() : number {
+        let sum : number = 0;
+        for (const task of this.tasks_) {
+            sum = sum + task.estimateTime;
+        }
+        console.log("Estimate Sum = " + sum);
+        return sum;
     }
 }
