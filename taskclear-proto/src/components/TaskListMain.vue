@@ -200,6 +200,9 @@ export default class TaskListMain extends Vue {
 
     endEditTask(task: Task, index: number) {
         console.log("endEditTask Event rise=" + index + "task=" + task.title);
+        if (task.endTime!=null) {
+            task.isDoing = false;
+        }
         this.$set(this.tasks, index, task);
         this.save();
     }
