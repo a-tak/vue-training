@@ -246,6 +246,8 @@ export default class TaskListMain extends Vue {
 
             //今開いている日付のdocから削除
             this.$store.commit("deleteTask",task);
+            this.save();
+
         });
     }
 
