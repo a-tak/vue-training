@@ -77,7 +77,6 @@ export default class TaskController {
                 sum = sum + task.estimateTime;
             }
         }
-        console.log("Estimate Sum = " + sum);
         return sum;
     }
 }
