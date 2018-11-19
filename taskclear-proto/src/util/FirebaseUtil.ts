@@ -17,7 +17,6 @@ export default class FirebaseUtil {
      * @param date 
      */
     static loadTasks(uid: string, date: Date) : TaskController {
-        console.log("loadTasks 1");
         let tc = new TaskController();
 
         firebase
@@ -29,8 +28,6 @@ export default class FirebaseUtil {
         .get()
         .then(doc => {
             if (doc.exists) {
-                console.log("loadTasks 2");
-
                 const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
                 if (firedoc !== undefined && firedoc.tasks != undefined) {
                     tc.loadFirestoreLiteral(firedoc.tasks);
@@ -43,18 +40,17 @@ export default class FirebaseUtil {
         }).catch(function(error) {
             console.log("Error getting document:", error);
         });
-        console.log("loadTasks 3");
 
         return tc;
     } 
 
-        /**
-     * Firestoreからデータを読み込み結果を返す
+    /**
+     * Firestoreからデータを読み込み
+     * Promiseで返すのでthenで処理するかawait指定で呼び出して戻り値に入れて処理する事
      * @param uid 
      * @param date 
      */
     static async loadTasksPromise(uid: string, date: Date) : Promise<TaskController> {
-        console.log("loadTasks 1");
         let tc = new TaskController();
 
         const doc = await firebase
@@ -66,7 +62,6 @@ export default class FirebaseUtil {
             .get()
 
         if (doc.exists) {
-            console.log("loadTasks 2");
 
             const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
             if (firedoc !== undefined && firedoc.tasks != undefined) {
@@ -77,7 +72,6 @@ export default class FirebaseUtil {
         } else {
             console.log("no such document");
         }
-        console.log("loadTasks 3");
 
         return tc;
     } 
