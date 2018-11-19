@@ -72,7 +72,10 @@ export default class TaskController {
     getEstimateSum() : number {
         let sum : number = 0;
         for (const task of this.tasks_) {
-            sum = sum + task.estimateTime;
+            //終了タスクの見積を含めると合計が何倍にもなるので除外する
+            if (task.endTime == null) {
+                sum = sum + task.estimateTime;
+            }
         }
         console.log("Estimate Sum = " + sum);
         return sum;
