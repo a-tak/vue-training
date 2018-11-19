@@ -55,16 +55,23 @@ export default class TaskEdit extends Vue {
     editTask_!: Task;
 
     save(): void {
-        if (this.startTime_.trim() !="") {
+        if (this.startTime_.trim() !="" ) {
             this.editTask_.startTime = Util.getDateObject(this.task_.date, this.startTime_);
+
+            if (this.endTime_.trim() !="") {
+                this.editTask_.endTime = Util.getDateObject(this.task_.date, this.endTime_);
+                //終了時間が入っていたら停止する
+                this.editTask_.isDoing = false;
+            }else{
+                this.editTask_.endTime = null;
+                //開始時間入っていて終了が入っていなければタスクを開始状態にする
+                this.editTask_.isDoing = true;
+            }
         }else{
             this.editTask_.startTime = null;
-        }
-
-        if (this.endTime_.trim() !="") {
-            this.editTask_.endTime = Util.getDateObject(this.task_.date, this.endTime_);
-        }else{
+            //開始が入ってなければ終了時間も空にする
             this.editTask_.endTime = null;
+            this.editTask_.isDoing = false;
         }
 
         if (Util.isNumber(this.estimateTime_)) {

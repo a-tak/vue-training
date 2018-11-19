@@ -206,9 +206,6 @@ export default class TaskListMain extends Vue {
     }
 
     endEditTask(task: Task, index: number) {
-        if (task.endTime!=null) {
-            task.isDoing = false;
-        }
         this.$set(this.tasks, index, task);
         this.save();
     }
