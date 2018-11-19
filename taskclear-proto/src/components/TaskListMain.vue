@@ -238,14 +238,16 @@ export default class TaskListMain extends Vue {
         if (util.getDateString(task.date) == this.targetDate) return;
 
         //変更先の日付のdocを取ってくる
-        let tc = fb.loadTasks(this.$store.getters.user.uid,task.date);
+        fb.loadTasksPromise(this.$store.getters.user.uid,task.date)
+        .then((tc) => {
+            console.log(`@changeTaskDate tc.count = ${tc.tasks.length}`);
+            //タスクを追加してsave
+            tc.tasks.push(task);
+            fb.saveTasks(this.$store.getters.user.uid,task.date,tc);
 
-        //タスクを追加してsave
-        tc.tasks.push(task);
-        fb.saveTasks(this.$store.getters.user.uid,task.date,tc);
-
-        //今開いている日付のdocから削除
-        this.$store.commit("deleteTask",task);
+            //今開いている日付のdocから削除
+            this.$store.commit("deleteTask",task);
+        });
     }
 
     get topRowLayoutAttributes() : {} {

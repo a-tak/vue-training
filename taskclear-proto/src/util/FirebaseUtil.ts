@@ -47,4 +47,38 @@ export default class FirebaseUtil {
 
         return tc;
     } 
+
+        /**
+     * Firestoreからデータを読み込み結果を返す
+     * @param uid 
+     * @param date 
+     */
+    static async loadTasksPromise(uid: string, date: Date) : Promise<TaskController> {
+        console.log("loadTasks 1");
+        let tc = new TaskController();
+
+        const doc = await firebase
+            .firestore()
+            .collection("users")
+            .doc(uid)
+            .collection("date")
+            .doc(util.getDateString(date))
+            .get()
+
+        if (doc.exists) {
+            console.log("loadTasks 2");
+
+            const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
+            if (firedoc !== undefined && firedoc.tasks != undefined) {
+                tc.loadFirestoreLiteral(firedoc.tasks);
+            } else {
+                console.log("doc undefined?");
+            }
+        } else {
+            console.log("no such document");
+        }
+        console.log("loadTasks 3");
+
+        return tc;
+    } 
 }
