@@ -47,6 +47,8 @@ export default class FirebaseUtil {
     /**
      * Firestoreからデータを読み込み
      * Promiseで返すのでthenで処理するかawait指定で呼び出して戻り値に入れて処理する事
+     * 読み込んだ後に後続で何か処理するならばこちらを使わないと、読み込み前に次の処理が行われてしまう
+     * いずれloadTasksの方は消すかも
      * @param uid 
      * @param date 
      */

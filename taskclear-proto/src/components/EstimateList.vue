@@ -30,7 +30,7 @@
 import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator';
 import TaskController from '../lib/TaskController';
 import Util from '../util/Util';
-import { firestore } from 'firebase';
+import FirebaseUtil from '../util/FirebaseUtil';
 
 @Component
 export default class EstimateList extends Vue {
@@ -55,7 +55,7 @@ export default class EstimateList extends Vue {
     }
 
     display() : void {
-        let fsdsPromises: Promise<firebase.firestore.DocumentSnapshot>[] = new Array(6);
+        let fsdsPromises: Promise<TaskController>[] = new Array(6);
         this.estimates_ = [];
 
         for (let n=0; n<=6; n++) {
@@ -63,62 +63,37 @@ export default class EstimateList extends Vue {
             let tc: TaskController = new TaskController();
             let targetDate: Date = new Date();
             targetDate.setDate(this.targetDate.getDate() + n);
-            console.log("display 1");
 
             //Promiseを配列に溜めておく
-            fsdsPromises[n] =             
-                firestore()
-                .collection("users")
-                .doc(this.$store.getters.user.uid)
-                .collection("date")
-                .doc(Util.getDateString(targetDate))
-                .get()
+            fsdsPromises[n] = FirebaseUtil.loadTasksPromise(this.$store.getters.user.uid,targetDate);         
 
             //非同期処理の登録
-            fsdsPromises[n].then(doc => {
-                if (doc.exists) {
-                    console.log("loadTasks 2");
-
-                    const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
-                    if (firedoc !== undefined && firedoc.tasks != undefined) {
-                        tc.loadFirestoreLiteral(firedoc.tasks);
-
-                        let estimate = new Estimate();
-                        estimate.date = targetDate;
-                        const weekday:string[] = [ "日", "月", "火", "水", "木", "金", "土" ] ;
-                        estimate.dayLabel = weekday[targetDate.getDay()];
-                        estimate.estimateTime = tc.getEstimateSum().toString();
-                        this.estimates_.push(estimate);
-
-                    } else {
-                        console.log("doc undefined?");
-                    }
-                } else {
-                    let estimate = new Estimate();
-                    estimate.date = targetDate;
-                    const weekday:string[] = [ "日", "月", "火", "水", "木", "金", "土" ] ;
-                    estimate.dayLabel = weekday[targetDate.getDay()];
-                    estimate.estimateTime = "0";
-                    this.estimates_.push(estimate);
-                }
+            fsdsPromises[n].then(tc => {
+                let estimate = new Estimate();
+                estimate.date = targetDate;
+                const weekday:string[] = [ "日", "月", "火", "水", "木", "金", "土" ] ;
+                estimate.dayLabel = weekday[targetDate.getDay()];
+                estimate.estimateTime = tc.getEstimateSum().toString();
+                this.estimates_.push(estimate);
             }).catch(function(error) {
                 console.log("Error getting document:", error);
             });
-
-            //1週間分のデータが全部非同期で取れたらソート
-            Promise.all(fsdsPromises).then(tc => {
-                //描画処理
-                this.estimates_.sort(function(a: Estimate, b: Estimate) : number {
-                    if (a.date == null) {
-                        return 1;
-                    }else if(b.date == null) {
-                        return -1;
-                    } else {
-                        return a.date.getTime() - b.date.getTime();
-                    }
-                })
-            })
         }
+
+        //1週間分のデータが全部非同期で取れたらソート
+        //TaskControllerが各Promiseから返ってくるけど使ってない。単に処理が終わった事だけ検知して処理している。微妙。
+        //おそらく画面も変な順番に並んだ後、ソートされていてぎこちない動きになってるかも
+        Promise.all(fsdsPromises).then(tc => {
+            this.estimates_.sort(function(a: Estimate, b: Estimate) : number {
+                if (a.date == null) {
+                    return 1;
+                }else if(b.date == null) {
+                    return -1;
+                } else {
+                    return a.date.getTime() - b.date.getTime();
+                }
+            })
+        })
     }
 };
 
