@@ -1,5 +1,8 @@
 # taskclear-proto
 
+* タスク管理アプリのプロトタイプ
+* ある程度形が見えたら別リポジトリに移動します
+
 ## Project setup
 ```
 npm install
