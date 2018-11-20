@@ -38,6 +38,7 @@ export default class EstimateList extends Vue {
 
     @Watch("targetDate")
     onValueChange(newValue: string,oldValue: string): void {
+        //日付が変えられたときにリッスンを破棄
         this.display();
     }
 
@@ -81,7 +82,8 @@ export default class EstimateList extends Vue {
             });
 
             //参照を貼る というかもしかして参照だけで上の読み込みは不要?
-            const doc = firestore()
+            //todo このunsubscribeをクラス変数に持たせて日付変わったら破棄するか。
+            const unsubscribe = firestore()
                 .collection("users")
                 .doc(this.$store.getters.user.uid)
                 .collection("date")
