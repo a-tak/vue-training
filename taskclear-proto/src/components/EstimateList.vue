@@ -31,6 +31,7 @@ import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator';
 import TaskController from '../lib/TaskController';
 import Util from '../util/Util';
 import FirebaseUtil from '../util/FirebaseUtil';
+import { firestore } from 'firebase';
 
 @Component
 export default class EstimateList extends Vue {
@@ -78,6 +79,20 @@ export default class EstimateList extends Vue {
             }).catch(function(error) {
                 console.log("Error getting document:", error);
             });
+
+            //参照を貼る
+            const doc = firestore()
+                .collection("users")
+                .doc(this.$store.getters.user.uid)
+                .collection("date")
+                .doc(Util.getDateString(targetDate))
+                .onSnapshot(doc => {
+                    const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
+                    if (firedoc !== undefined && firedoc.tasks !== undefined) {
+                        tc.loadFirestoreLiteral(firedoc.tasks);
+                        console.log("doc update = "+ tc.tasks.length + " id=" + doc.id);
+                    }
+                });
         }
 
         //1週間分のデータが全部非同期で取れたらソート
@@ -94,6 +109,7 @@ export default class EstimateList extends Vue {
                 }
             })
         })
+
     }
 };
 
