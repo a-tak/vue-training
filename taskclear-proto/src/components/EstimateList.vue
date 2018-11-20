@@ -80,7 +80,7 @@ export default class EstimateList extends Vue {
                 console.log("Error getting document:", error);
             });
 
-            //参照を貼る
+            //参照を貼る というかもしかして参照だけで上の読み込みは不要?
             const doc = firestore()
                 .collection("users")
                 .doc(this.$store.getters.user.uid)
@@ -90,6 +90,7 @@ export default class EstimateList extends Vue {
                     const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
                     if (firedoc !== undefined && firedoc.tasks !== undefined) {
                         tc.loadFirestoreLiteral(firedoc.tasks);
+                        // 今のままだと表示が更新されない。doc.idで日付は取れるので配列特定して更新?
                         console.log("doc update = "+ tc.tasks.length + " id=" + doc.id);
                     }
                 });
