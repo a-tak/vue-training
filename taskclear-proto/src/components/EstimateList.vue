@@ -39,6 +39,9 @@ export default class EstimateList extends Vue {
     @Watch("targetDate")
     onValueChange(newValue: string,oldValue: string): void {
         //日付が変えられたときにリッスンを破棄
+        for (const unsubscribe of this.unsubscribes_) {
+            unsubscribe();
+        }
         this.display();
     }
 
@@ -51,6 +54,10 @@ export default class EstimateList extends Vue {
     get estimates(): Estimate[] {
         return this.estimates_;
     }
+
+    //関数の配列!
+    //()で関数を表し=>でvoid戻り値。それらを()で括って[]で配列と定義
+    private unsubscribes_: (() => void)[] = [];
 
     created() : void {
         this.display();
@@ -71,31 +78,11 @@ export default class EstimateList extends Vue {
 
             //非同期処理の登録
             fsdsPromises[n].then(tc => {
-                let estimate = new Estimate();
-                estimate.date = targetDate;
-                const weekday:string[] = [ "日", "月", "火", "水", "木", "金", "土" ] ;
-                estimate.dayLabel = weekday[targetDate.getDay()];
-                estimate.estimateTime = tc.getEstimateSum().toString();
+                const estimate = this.createEstimate(tc, targetDate);
                 this.estimates_.push(estimate);
             }).catch(function(error) {
                 console.log("Error getting document:", error);
             });
-
-            //参照を貼る というかもしかして参照だけで上の読み込みは不要?
-            //todo このunsubscribeをクラス変数に持たせて日付変わったら破棄するか。
-            const unsubscribe = firestore()
-                .collection("users")
-                .doc(this.$store.getters.user.uid)
-                .collection("date")
-                .doc(Util.getDateString(targetDate))
-                .onSnapshot(doc => {
-                    const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
-                    if (firedoc !== undefined && firedoc.tasks !== undefined) {
-                        tc.loadFirestoreLiteral(firedoc.tasks);
-                        // 今のままだと表示が更新されない。doc.idで日付は取れるので配列特定して更新?
-                        console.log("doc update = "+ tc.tasks.length + " id=" + doc.id);
-                    }
-                });
         }
 
         //1週間分のデータが全部非同期で取れたらソート
@@ -111,9 +98,49 @@ export default class EstimateList extends Vue {
                     return a.date.getTime() - b.date.getTime();
                 }
             })
-        })
+        });
 
+        for (let n=0; n<=6; n++) {
+            // 一日ずつ日付を進めてデータを取得
+            let tc: TaskController = new TaskController();
+            let targetDate: Date = new Date();
+            targetDate.setDate(this.targetDate.getDate() + n);
+
+            //ドキュメントのリッスン
+            //リッスン破棄のために戻り値を配列で保存
+            this.unsubscribes_.push(firestore()
+                .collection("users")
+                .doc(this.$store.getters.user.uid)
+                .collection("date")
+                .doc(Util.getDateString(targetDate))
+                .onSnapshot(doc => {
+                    const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
+                    if (firedoc !== undefined && firedoc.tasks !== undefined) {
+                        tc.loadFirestoreLiteral(firedoc.tasks);
+                        const estimate = this.createEstimate(tc, targetDate);
+                        for (const [index, item] of this.estimates_.entries()) {
+                            if (item.dateStr === estimate.dateStr) {
+                                this.$set(this.estimates_, index, estimate);
+                                break;
+                            }
+                        }
+                    }
+                })
+            );
+            
+        }
     }
+
+    createEstimate(tc: TaskController, targetDate: Date) : Estimate {
+        let estimate = new Estimate();
+        estimate.date = targetDate;
+        const weekday:string[] = [ "日", "月", "火", "水", "木", "金", "土" ] ;
+        estimate.dayLabel = weekday[targetDate.getDay()];
+        estimate.estimateTime = tc.getEstimateSum().toString();
+
+        return estimate;
+    }
+
 };
 
 class Estimate extends Vue {
