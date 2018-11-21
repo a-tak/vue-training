@@ -7,15 +7,15 @@
             </v-flex>
             <v-flex ma-1>
                 <span>開始時間</span>
-                <v-text-field type="tel" placeholder="開始時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="startTime_" clearable @keyup.enter="save"></v-text-field>
+                <v-text-field type="number" placeholder="開始時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="startTime_" clearable @keyup.enter="save"></v-text-field>
             </v-flex>
             <v-flex ma-1>
                 <span>終了時間</span>
-                <v-text-field type="tel" placeholder="終了時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="endTime_" clearable  @keyup.enter="save"></v-text-field>
+                <v-text-field type="number" placeholder="終了時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="endTime_" clearable  @keyup.enter="save"></v-text-field>
             </v-flex>
             <v-flex ma-1>
                 <span>見積時間(分)</span>
-                <v-text-field type="tel" placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="estimateTime_" clearable @keyup.enter="save"> </v-text-field>
+                <v-text-field type="number" placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="estimateTime_" clearable @keyup.enter="save"> </v-text-field>
             </v-flex>
         </v-layout>
         <v-layout row fill-height align-center justify-center>
