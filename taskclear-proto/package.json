@@ -4,17 +4,18 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "staging": "vue-cli-service build --mode development"
   },
   "dependencies": {
     "@types/uuid": "^3.4.4",
-    "firebase": "^5.5.8",
+    "firebase": "^5.5.9",
     "uuid": "^3.3.2",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.1",
-    "vuetify": "^1.3.7",
+    "vuetify": "^1.3.9",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
