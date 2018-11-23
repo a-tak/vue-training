@@ -13,7 +13,7 @@
                                 <v-icon color="purple">play_circle_filled</v-icon>
                             </v-btn>
                             <v-btn icon ripple @click.stop="startTask(task_)" v-else-if="task_.isDoing === false && task_.endTime!=null">
-                                <v-icon color="grey">play_circle_filled</v-icon>
+                                <v-icon color="grey darken-1">play_circle_filled</v-icon>
                             </v-btn>
                             <v-btn icon ripple @click.stop="stopTask(task_)" v-else-if="task_.isDoing === true">
                                 <v-icon color="purple">pause_circle_filled</v-icon>
@@ -42,15 +42,20 @@
                                 min-width="290px"
                             >
                             <v-btn slot="activator" icon ripple @click.stop="displayedTaskCal = !displayedTaskCal">
-                                <v-icon color="grey lighten-1">calendar_today</v-icon>
+                                <v-icon color="grey darken-1">calendar_today</v-icon>
                             </v-btn>
 
                             <v-date-picker v-model="targetDate" @input="selectDate()" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
                             </v-menu>
                         </v-flex>
                         <v-flex xs4 sm2 md1 class="text-xs-right">
+                            <v-btn icon ripple @click.stop="">
+                                <v-icon color="grey darken-1">repeat</v-icon>
+                            </v-btn>
+                        </v-flex>
+                        <v-flex xs4 sm2 md1 class="text-xs-right">
                             <v-btn icon ripple @click.stop="deleteTask(index_)">
-                                <v-icon color="grey lighten-1">delete</v-icon>
+                                <v-icon color="grey darken-1">delete</v-icon>
                             </v-btn>
                         </v-flex>
                     </v-layout>
