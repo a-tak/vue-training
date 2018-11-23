@@ -238,7 +238,7 @@ export default class TaskListMain extends Vue {
         if (DateUtil.getDateString(task.date) == this.targetDate) return;
 
         //変更先の日付のdocを取ってくる
-        fb.loadTasksPromise(this.$store.getters.user.uid,task.date)
+        fb.loadTasks(this.$store.getters.user.uid,task.date)
         .then((tc) => {
             //タスクを追加してsave
             tc.tasks.push(task);

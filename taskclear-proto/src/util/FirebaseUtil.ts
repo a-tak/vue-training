@@ -21,33 +21,47 @@ export default class FirebaseUtil {
      */
     static async loadTasks(uid: string, date: Date) : Promise<TaskController> {
         let tc = new TaskController();
-
         
-        const query:firestore.QuerySnapshot = 
-        await firebase
-            .firestore()
-            .collection("users")
-            .doc(uid)
-            .collection("tasks")
-            .where("date",">=",firestore.Timestamp.fromDate(date))
-            .get();
+        const query:firestore.QuerySnapshot = await this.getQuery(uid, date).get();
 
-        console.log(`ヒット件数  ${query.size} (uid=${uid} date=${date})`);
         query.forEach(doc => {
             if (doc !== undefined) {
                 const data: firebase.firestore.DocumentData | undefined = doc.data();
-                let task = new Task(data.date.toDate(), data.title);
-                task.id = data.id;
-                task.startTime =  this.toDate(data.startTime);
-                task.endTime = this.toDate(data.endTime);
-                task.estimateTime = data.estimateTime;
-                task.isDoing = data.isDoing;
-                tc.tasks.push(task);
+                tc.tasks.push(this.setTask(data));
             } else {
                 console.log("doc undefined?");
             }
         });
         return tc;
+    }
+    
+    static getQuery(uid: string, date: Date): firestore.Query {
+        //とりあえず今は一日の区切りを0時としてfrom,toを作る
+        //新たにnewしてセットしないと参照が書き換わるだけでendがおかしくなる
+        const from: Date = new Date(date);
+        from.setHours(0,0,0,0);
+        const to: Date = new Date(date);
+        to.setDate(date.getDate()+1);
+        to.setHours(0,0,0,0);
+
+        return firebase
+            .firestore()
+            .collection("users")
+            .doc(uid)
+            .collection("tasks")
+            .where("date",">=",firestore.Timestamp.fromDate(from))
+            .where("date","<",firestore.Timestamp.fromDate(to));
+    }
+
+
+    static setTask(data: firestore.DocumentData) : Task {
+        let task = new Task(data.date.toDate(), data.title);
+        task.id = data.id;
+        task.startTime =  this.toDate(data.startTime);
+        task.endTime = this.toDate(data.endTime);
+        task.estimateTime = data.estimateTime;
+        task.isDoing = data.isDoing;
+        return task;
     }
 
     static toDate(date: firestore.Timestamp | undefined) : Date | null {
@@ -57,38 +71,4 @@ export default class FirebaseUtil {
             return date.toDate();
         }
     }
-
-    /**
-     * Firestoreからデータを読み込み
-     * Promiseで返すのでthenで処理するかawait指定で呼び出して戻り値に入れて処理する事
-     * 読み込んだ後に後続で何か処理するならばこちらを使わないと、読み込み前に次の処理が行われてしまう
-     * いずれloadTasksの方は消すかも
-     * @param uid 
-     * @param date 
-     */
-    static async loadTasksPromise(uid: string, date: Date) : Promise<TaskController> {
-        let tc = new TaskController();
-
-        const doc = await firebase
-            .firestore()
-            .collection("users")
-            .doc(uid)
-            .collection("date")
-            .doc(DateUtil.getDateString(date))
-            .get()
-
-        if (doc.exists) {
-
-            const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
-            if (firedoc !== undefined && firedoc.tasks != undefined) {
-                tc.loadFirestoreLiteral(firedoc.tasks);
-            } else {
-                console.log("doc undefined?");
-            }
-        } else {
-            console.log("no such document");
-        }
-
-        return tc;
-    } 
 }

@@ -67,6 +67,7 @@ export default class EstimateList extends Vue {
         let fsdsPromises: Promise<TaskController>[] = new Array(6);
         this.estimates_ = [];
 
+        //見積時間の初期表示
         for (let n=0; n<=6; n++) {
             // 一日ずつ日付を進めてデータを取得
             let tc: TaskController = new TaskController();
@@ -74,7 +75,7 @@ export default class EstimateList extends Vue {
             targetDate.setDate(this.targetDate.getDate() + n);
 
             //Promiseを配列に溜めておく
-            fsdsPromises[n] = FirebaseUtil.loadTasksPromise(this.$store.getters.user.uid,targetDate);         
+            fsdsPromises[n] = FirebaseUtil.loadTasks(this.$store.getters.user.uid,targetDate);         
 
             //非同期処理の登録
             fsdsPromises[n].then(tc => {
@@ -89,6 +90,7 @@ export default class EstimateList extends Vue {
         //TaskControllerが各Promiseから返ってくるけど使ってない。単に処理が終わった事だけ検知して処理している。微妙。
         //おそらく画面も変な順番に並んだ後、ソートされていてぎこちない動きになってるかも
         Promise.all(fsdsPromises).then(tc => {
+            //全部データ取得したら一旦ソート
             this.estimates_.sort(function(a: Estimate, b: Estimate) : number {
                 if (a.date == null) {
                     return 1;
@@ -97,40 +99,43 @@ export default class EstimateList extends Vue {
                 } else {
                     return a.date.getTime() - b.date.getTime();
                 }
-            })
-        });
-
-        for (let n=0; n<=6; n++) {
-            // 一日ずつ日付を進めてデータを取得
-            let tc: TaskController = new TaskController();
-            let targetDate: Date = new Date();
-            targetDate.setDate(this.targetDate.getDate() + n);
-
+            });
+                
             //ドキュメントのリッスン
-            //リッスン破棄のために戻り値を配列で保存
-            this.unsubscribes_.push(firestore()
-                .collection("users")
-                .doc(this.$store.getters.user.uid)
-                .collection("date")
-                .doc(DateUtil.getDateString(targetDate))
-                .onSnapshot(doc => {
-                    const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
-                    if (firedoc !== undefined && firedoc.tasks !== undefined) {
-                        tc.loadFirestoreLiteral(firedoc.tasks);
-                        const estimate = this.createEstimate(tc, targetDate);
-                        for (const [index, item] of this.estimates_.entries()) {
-                            if (item.dateStr === estimate.dateStr) {
-                                this.$set(this.estimates_, index, estimate);
-                                break;
+            for (let n=0; n<=6; n++) {
+                // 一日ずつ日付を進めてデータを取得
+                let tc: TaskController = new TaskController();
+                let targetDate: Date = new Date();
+                targetDate.setDate(this.targetDate.getDate() + n);
+
+                //リッスン破棄のために戻り値を配列で保存
+                this.unsubscribes_.push(FirebaseUtil.getQuery(this.$store.getters.user.uid,targetDate)
+                    .onSnapshot(query => {
+                        query.forEach(doc => {
+                            //更新があったら見積時間を再計算
+                            const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
+                            if (firedoc !== undefined) {
+                                FirebaseUtil.loadTasks(this.$store.getters.user.uid,targetDate).then(tc => {
+                                    const estimate = this.createEstimate(tc, targetDate);
+                                    for (const [index, item] of this.estimates_.entries()) {
+                                        if (item.dateStr === estimate.dateStr) {
+                                            this.$set(this.estimates_, index, estimate);
+                                            break;
+                                        }
+                                    }
+                                });
                             }
-                        }
-                    }
-                })
-            );
-            
-        }
+                        })
+                    })
+                );
+            }
+        });
     }
 
+    /**
+     * 一日分のEstimateクラスをつくって返す
+     * @param tc 計算対象の一日のデータが入ったTaskController
+     */
     createEstimate(tc: TaskController, targetDate: Date) : Estimate {
         let estimate = new Estimate();
         estimate.date = targetDate;
