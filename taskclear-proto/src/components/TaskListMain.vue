@@ -187,7 +187,7 @@ export default class TaskListMain extends Vue {
             task.startTime = new Date();
         }
 
-        this.$store.getters.taskCtrl.sort();
+        this.$store.commit("sortTask");
 
         this.save();
     }

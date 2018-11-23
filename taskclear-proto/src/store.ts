@@ -39,6 +39,9 @@ export default new Vuex.Store({
     setTargetDate(state,date: Date) {
       state.targetDate = date;
     },
+    sortTask(state) {
+      state.taskCtrl.sort();
+    }
   },
   actions: {
 
