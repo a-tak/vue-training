@@ -49,7 +49,7 @@
                             </v-menu>
                         </v-flex>
                         <v-flex xs4 sm2 md1 class="text-xs-right">
-                            <v-btn icon ripple @click.stop="">
+                            <v-btn icon ripple @click.stop="editingRepeat_=!editingRepeat_">
                                 <v-icon color="grey darken-1">repeat</v-icon>
                             </v-btn>
                         </v-flex>
@@ -67,9 +67,14 @@
         row
         v-if="isEdit_"
         >
-            <v-card>
-                <TaskEdit v-bind:task_="task_" v-bind:index_="index_" v-on:endEditEvent="endEditEvent"></TaskEdit>
-            </v-card>
+            <TaskEdit v-bind:task_="task_" v-on:endEditEvent="endEditEvent"></TaskEdit>
+        </v-layout>
+        <v-layout
+        align-center
+        row
+        v-if="editingRepeat_"
+        >
+            <RepeatEdit v-bind:task_="task_" v-on:endRepeatEditEvent="endRepeatEditEvent"></RepeatEdit>
         </v-layout>
     </v-container>
 </template>
@@ -84,14 +89,16 @@
 import { Component, Vue, Watch, Prop, Emit } from 'vue-property-decorator';
 import NewTask from "@/components/NewTask.vue";
 import TaskEdit from "@/components/TaskEdit.vue";
+import RepeatEdit from "@/components/RepeatEdit.vue"
 import DateUtil from "../util/DateUtil";
 import Task from '../lib/Task';
 
 @Component({
-  components: {
-    NewTask,
-    TaskEdit,
-  },
+    components: {
+        NewTask,
+        TaskEdit,
+        RepeatEdit,
+    },
 })
 
 export default class TaskRow extends Vue {
@@ -115,6 +122,7 @@ export default class TaskRow extends Vue {
     changeDate(task: Task): void {}
 
     private isEdit_: boolean = false;
+    private editingRepeat_: boolean = false;
 
     private displayedTaskCal_: boolean = false;
     get displayedTaskCal() : boolean{
@@ -127,7 +135,7 @@ export default class TaskRow extends Vue {
 
     private targetDate_:Date = new Date();
     get targetDate(): string {
-      return this.task_.date.toISOString().substr(0, 10);
+        return this.task_.date.toISOString().substr(0, 10);
     }
 
     set targetDate(value:string) {
@@ -146,9 +154,14 @@ export default class TaskRow extends Vue {
         this.isEdit_ = true;
     }
 
-    endEditEvent(task: Task, index: number) {
+    endEditEvent(task: Task) {
         this.isEdit_ = false;
-        this.endEdit(task,index);
+        this.endEdit(task, this.index_);
+    }
+
+    endRepeatEditEvent(task: Task) {
+        this.editingRepeat_ = false;
+        this.endEdit(task, this.index_);
     }
 
     /** 

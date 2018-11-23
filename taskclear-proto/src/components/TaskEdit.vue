@@ -1,31 +1,33 @@
 <template>
     <div id="task-edit">
-        <v-layout v-bind="layoutAttributes" fill-height align-center justify-center ma-1>
-            <v-flex ma-1>
-                <span>タスク名</span>
-                <v-text-field placeholder="タスク名" single-line outline v-model="editTask_.title" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
-            </v-flex>
-            <v-flex ma-1>
-                <span>開始時間</span>
-                <v-text-field type="number" placeholder="開始時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="startTime_" clearable @keyup.enter="save"></v-text-field>
-            </v-flex>
-            <v-flex ma-1>
-                <span>終了時間</span>
-                <v-text-field type="number" placeholder="終了時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="endTime_" clearable  @keyup.enter="save"></v-text-field>
-            </v-flex>
-            <v-flex ma-1>
-                <span>見積時間(分)</span>
-                <v-text-field type="number" placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="estimateTime_" clearable @keyup.enter="save"> </v-text-field>
-            </v-flex>
-        </v-layout>
-        <v-layout row fill-height align-center justify-center>
-            <v-flex>
-                <v-btn @click.stop="save">保存</v-btn>
-            </v-flex>
-            <v-flex>
-                <v-btn @click.stop="cancel">キャンセル</v-btn>
-            </v-flex>
-        </v-layout>
+        <v-card>
+            <v-layout v-bind="layoutAttributes" fill-height align-center justify-center ma-1>
+                <v-flex ma-1>
+                    <span>タスク名</span>
+                    <v-text-field placeholder="タスク名" single-line outline v-model="editTask_.title" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
+                </v-flex>
+                <v-flex ma-1>
+                    <span>開始時間</span>
+                    <v-text-field type="number" placeholder="開始時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="startTime_" clearable @keyup.enter="save"></v-text-field>
+                </v-flex>
+                <v-flex ma-1>
+                    <span>終了時間</span>
+                    <v-text-field type="number" placeholder="終了時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="endTime_" clearable  @keyup.enter="save"></v-text-field>
+                </v-flex>
+                <v-flex ma-1>
+                    <span>見積時間(分)</span>
+                    <v-text-field type="number" placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="estimateTime_" clearable @keyup.enter="save"> </v-text-field>
+                </v-flex>
+            </v-layout>
+            <v-layout row fill-height align-center justify-center>
+                <v-flex>
+                    <v-btn @click.stop="save">保存</v-btn>
+                </v-flex>
+                <v-flex>
+                    <v-btn @click.stop="cancel">キャンセル</v-btn>
+                </v-flex>
+            </v-layout>
+        </v-card>
     </div>
 </template>
 
@@ -44,10 +46,9 @@ export default class TaskEdit extends Vue {
 
     //!はundefinedやnullにならないことを示すもの
     @Prop() task_!: Task;
-    @Prop() index_!: number;
     
     @Emit('endEditEvent')
-    endEdit(task: Task, index: number): void {}
+    endEdit(task: Task): void {}
 
     startTime_ : string = "";
     endTime_ : string = "";
@@ -82,12 +83,12 @@ export default class TaskEdit extends Vue {
         }
 
         //編集終了イベント発生
-        this.endEdit(this.editTask_, this.index_);
+        this.endEdit(this.editTask_);
     }
     
     cancel(): void{
         this.editTask_ = this.backupedTask_;
-        this.endEdit(this.backupedTask_, this.index_);
+        this.endEdit(this.backupedTask_);
     }
 
     setCanSubmit(): void {

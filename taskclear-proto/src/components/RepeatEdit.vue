@@ -1,117 +1,145 @@
 <template>
     <div id="repeat-edit">
-        <v-layout v-bind="layoutAttributes" fill-height align-center justify-center ma-1>
-            <v-flex ma-1>
-                <span>タスク名</span>
-                <v-text-field placeholder="タスク名" single-line outline v-model="editTask_.title" clearable  @keyup.enter="save" @keypress="setCanSubmit"></v-text-field>
-            </v-flex>
-            <v-flex ma-1>
-                <span>開始時間</span>
-                <v-text-field type="number" placeholder="開始時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="startTime_" clearable @keyup.enter="save"></v-text-field>
-            </v-flex>
-            <v-flex ma-1>
-                <span>終了時間</span>
-                <v-text-field type="number" placeholder="終了時間" single-line outline mask="####" hint="数字3または4桁。9時20分は「920」と入力" v-model="endTime_" clearable  @keyup.enter="save"></v-text-field>
-            </v-flex>
-            <v-flex ma-1>
-                <span>見積時間(分)</span>
-                <v-text-field type="number" placeholder="見積時間(分)" single-line outline mask="#####" hint="見積時間(分)を入力" v-model="estimateTime_" clearable @keyup.enter="save"> </v-text-field>
-            </v-flex>
-        </v-layout>
-        <v-layout row fill-height align-center justify-center>
-            <v-flex>
-                <v-btn @click.stop="save">保存</v-btn>
-            </v-flex>
-            <v-flex>
-                <v-btn @click.stop="cancel">キャンセル</v-btn>
-            </v-flex>
-        </v-layout>
+        <v-card class="ma-2">
+            <v-layout v-bind="layoutAttributes" fill-height align-center justify-center row>
+                <v-flex ml-3>
+                    <v-layout column fill-height align-center justify-center>
+                        <v-flex>
+                            <v-checkbox v-model="selectedDay_" label="月曜日" value=1></v-checkbox>
+                        </v-flex>
+                        <v-flex>
+                            <v-checkbox v-model="selectedDay_" label="火曜日" value=2></v-checkbox>
+                        </v-flex>
+                        <v-flex>
+                            <v-checkbox v-model="selectedDay_" label="水曜日" value=3></v-checkbox>
+                        </v-flex>
+                        <v-flex>
+                            <v-checkbox v-model="selectedDay_" label="木曜日" value=4></v-checkbox>
+                        </v-flex>
+                        <v-flex>
+                            <v-checkbox v-model="selectedDay_" label="金曜日" value=5></v-checkbox>
+                        </v-flex>
+                        <v-flex>
+                            <v-checkbox v-model="selectedDay_" label="土曜日" value=6></v-checkbox>
+                        </v-flex>
+                        <v-flex>
+                            <v-checkbox v-model="selectedDay_" label="日曜日" value=0></v-checkbox>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+                <v-flex>
+                    <v-layout column fill-height align-center justify-center>
+                        <v-flex>
+                            <v-menu
+                                :close-on-content-click="false"
+                                v-model="menufrom_"
+                                :nudge-right="40"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                                min-width="290px"
+                            >
+                            <v-text-field
+                                slot="activator"
+                                v-model="dateFrom"
+                                label="開始日"
+                                prepend-icon="event"
+                                readonly
+                            ></v-text-field>
+                            <v-date-picker v-model="dateFrom" @input="menufrom_ = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
+                            </v-menu>
+                        </v-flex>
+                        <v-flex>
+                            <v-menu
+                                :close-on-content-click="false"
+                                v-model="menuto_"
+                                :nudge-right="40"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                                min-width="290px"
+                            >
+                            <v-text-field
+                                slot="activator"
+                                v-model="dateTo"
+                                label="終了日"
+                                prepend-icon="event"
+                                readonly
+                            ></v-text-field>
+                            <v-date-picker v-model="dateTo" @input="menuto_ = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
+                            </v-menu>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+            </v-layout>
+            <v-layout row fill-height align-center justify-center>
+                <v-flex>
+                    <v-btn @click.stop="save">保存</v-btn>
+                </v-flex>
+                <v-flex>
+                    <v-btn @click.stop="cancel">キャンセル</v-btn>
+                </v-flex>
+            </v-layout>
+        </v-card>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator';
 import Task from '../lib/Task';
-import TaskController from '../lib/TaskController';
 import DateUtil from '../util/DateUtil';
-import Util from '../util/Util';
+import TaskController from '../lib/TaskController';
 
 @Component
 export default class RepeatEdit extends Vue {
 
-    canSubmit_: boolean = false;
-    menu_: boolean = false;
+    private menufrom_: boolean = false;
+    private menuto_: boolean = false;
+    private selectedDay_: number[] = [];
+    private from_: Date = new Date();
+    private to_: Date = new Date();
+
+    get dateFrom() : string {
+        return DateUtil.getDateString(this.from_);
+    }
+    set dateFrom(value: string) {
+        this.from_ = new Date(value);
+    }
+    
+    get dateTo() : string {
+        return DateUtil.getDateString(this.to_);
+    }
+    set dateTo(value: string) {
+        this.to_ = new Date(value);
+    }
 
     //!はundefinedやnullにならないことを示すもの
     @Prop() task_!: Task;
-    @Prop() index_!: number;
-    
-    @Emit('endEditEvent')
-    endEdit(task: Task, index: number): void {}
 
-    startTime_ : string = "";
-    endTime_ : string = "";
-    estimateTime_ : string ="";
-    backupedTask_!: Task;
-    editTask_!: Task;
+    private backupedTask_: Task;
+    
+    @Emit('endRepeatEditEvent')
+    endEdit(task: Task): void {}
+
+    constructor () {
+        super();
+        this.backupedTask_ = this.task_.copy();
+    }
 
     save(): void {
-        if (this.startTime_.trim() !="" ) {
-            this.editTask_.startTime = DateUtil.getDateObject(this.task_.date, this.startTime_);
-
-            if (this.endTime_.trim() !="") {
-                this.editTask_.endTime = DateUtil.getDateObject(this.task_.date, this.endTime_);
-                //終了時間が入っていたら停止する
-                this.editTask_.isDoing = false;
-            }else{
-                this.editTask_.endTime = null;
-                //開始時間入っていて終了が入っていなければタスクを開始状態にする
-                this.editTask_.isDoing = true;
-            }
-        }else{
-            this.editTask_.startTime = null;
-            //開始が入ってなければ終了時間も空にする
-            this.editTask_.endTime = null;
-            this.editTask_.isDoing = false;
-        }
-
-        if (Util.isNumber(this.estimateTime_)) {
-            this.editTask_.estimateTime = Number(this.estimateTime_);
-        } else {
-            this.editTask_.estimateTime = 0;
-        }
-
         //編集終了イベント発生
-        this.endEdit(this.editTask_, this.index_);
+        this.endEdit(this.task_);
     }
     
     cancel(): void{
-        this.editTask_ = this.backupedTask_;
-        this.endEdit(this.backupedTask_, this.index_);
+        this.endEdit(this.backupedTask_);
     }
 
-    setCanSubmit(): void {
-        this.canSubmit_ = true;
-    }
 
     created(): void {
-        console.log("created!");
-        //編集前の値を待避
         this.backupedTask_ = this.task_.copy();
-        //編集用オブジェクト作成
-        this.editTask_ = this.task_.copy();
-
-        if (this.task_.startTime!=null) {
-            this.startTime_ = DateUtil.get4digitTime(this.task_.startTime);
-        }
-        if (this.task_.endTime!=null) {
-            this.endTime_ = DateUtil.get4digitTime(this.task_.endTime);
-        }
-
-        if (this.task_.estimateTime!=null) {
-            this.estimateTime_ = this.task_.estimateTime.toString();
-        }
-
     }
 
     //算出プロパティーでオブジェクトを返すと属性を展開してくれる
