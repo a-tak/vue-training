@@ -1,4 +1,3 @@
-import firebase,{ firestore } from 'firebase';
 import uuid from 'uuid';
 
 export default class Task {
