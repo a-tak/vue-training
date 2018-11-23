@@ -154,6 +154,7 @@ export default class TaskListMain extends Vue {
     loadTasks() : void {
         fb.loadTasks(this.$store.getters.user.uid, this.$store.getters.targetDate)
         .then(tc => {
+            tc.sort();
             this.$store.commit("setTaskCtrl", tc);
             }
         );
@@ -185,15 +186,8 @@ export default class TaskListMain extends Vue {
             task.isDoing = true;
             task.startTime = new Date();
         }
-        this.tasks.sort(function(a: Task,b: Task){
-            if (a.startTime == null) {
-                return 1;
-            }else if(b.startTime == null) {
-                return -1;
-            } else {
-                return a.startTime.getTime() - b.startTime.getTime();
-            }
-        });
+
+        this.$store.getters.taskCtrl.sort();
 
         this.save();
     }

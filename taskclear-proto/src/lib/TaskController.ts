@@ -79,4 +79,17 @@ export default class TaskController {
         }
         return sum;
     }
+
+    sort() : void {
+        this.tasks_.sort(function(a: Task,b: Task){
+            if (a.startTime == null) {
+                return 1;
+            }else if(b.startTime == null) {
+                return -1;
+            } else {
+                return a.startTime.getTime() - b.startTime.getTime();
+            }
+        });
+
+    }
 }
