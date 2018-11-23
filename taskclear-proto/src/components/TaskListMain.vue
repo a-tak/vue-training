@@ -98,7 +98,7 @@ import firebase,{ firestore } from "firebase";
 import NewTask from "@/components/NewTask.vue";
 import TaskRow from "@/components/TaskRow.vue";
 import EstimateList from "@/components/EstimateList.vue";
-import util from "../util/Util";
+import DateUtil from "../util/DateUtil";
 import fb from "../util/FirebaseUtil";
 import uuid from 'uuid';
 import Task from '../lib/Task';
@@ -128,7 +128,7 @@ export default class TaskListMain extends Vue {
     }
 
     get targetDate(): string {
-      return util.getDateString(this.$store.getters.targetDate);
+      return DateUtil.getDateString(this.$store.getters.targetDate);
     }
 
     set targetDate(value:string) {
@@ -152,8 +152,11 @@ export default class TaskListMain extends Vue {
     }
 
     loadTasks() : void {
-        this.$store.commit("setTaskCtrl",
-         fb.loadTasks(this.$store.getters.user.uid, this.$store.getters.targetDate));
+        fb.loadTasks(this.$store.getters.user.uid, this.$store.getters.targetDate)
+        .then(tc => {
+            this.$store.commit("setTaskCtrl", tc);
+            }
+        );
     }
 
     deleteTaskByIndex(index: number) : void {
@@ -232,7 +235,7 @@ export default class TaskListMain extends Vue {
     changeTaskDate(task: Task): void {
         
         //編集中の日付と同じならば何もしない
-        if (util.getDateString(task.date) == this.targetDate) return;
+        if (DateUtil.getDateString(task.date) == this.targetDate) return;
 
         //変更先の日付のdocを取ってくる
         fb.loadTasksPromise(this.$store.getters.user.uid,task.date)

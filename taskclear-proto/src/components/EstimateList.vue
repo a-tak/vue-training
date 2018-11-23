@@ -29,7 +29,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Emit, Watch } from 'vue-property-decorator';
 import TaskController from '../lib/TaskController';
-import Util from '../util/Util';
+import DateUtil from '../util/DateUtil';
 import FirebaseUtil from '../util/FirebaseUtil';
 import { firestore } from 'firebase';
 
@@ -112,7 +112,7 @@ export default class EstimateList extends Vue {
                 .collection("users")
                 .doc(this.$store.getters.user.uid)
                 .collection("date")
-                .doc(Util.getDateString(targetDate))
+                .doc(DateUtil.getDateString(targetDate))
                 .onSnapshot(doc => {
                     const firedoc: firebase.firestore.DocumentData | undefined  = doc.data();
                     if (firedoc !== undefined && firedoc.tasks !== undefined) {
@@ -154,7 +154,7 @@ class Estimate extends Vue {
         this. date_ = v;
     }
     public get dateStr(): string {
-        return Util.getDateString(this.date_);
+        return DateUtil.getDateString(this.date_);
     }
 
     private dayLabel_ : string ="";

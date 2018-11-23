@@ -84,7 +84,7 @@
 import { Component, Vue, Watch, Prop, Emit } from 'vue-property-decorator';
 import NewTask from "@/components/NewTask.vue";
 import TaskEdit from "@/components/TaskEdit.vue";
-import util from "../util/Util";
+import DateUtil from "../util/DateUtil";
 import Task from '../lib/Task';
 
 @Component({
@@ -137,7 +137,7 @@ export default class TaskRow extends Vue {
     getTime(time: Date) : string {
         let timeStr: string = "";
         if (time != null) {
-            timeStr = util.getTimeString(time);
+            timeStr = DateUtil.getTimeString(time);
         }
         return timeStr;
     }

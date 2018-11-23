@@ -33,6 +33,7 @@
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator';
 import Task from '../lib/Task';
 import TaskController from '../lib/TaskController';
+import DateUtil from '../util/DateUtil';
 import Util from '../util/Util';
 
 @Component
@@ -56,10 +57,10 @@ export default class RepeatEdit extends Vue {
 
     save(): void {
         if (this.startTime_.trim() !="" ) {
-            this.editTask_.startTime = Util.getDateObject(this.task_.date, this.startTime_);
+            this.editTask_.startTime = DateUtil.getDateObject(this.task_.date, this.startTime_);
 
             if (this.endTime_.trim() !="") {
-                this.editTask_.endTime = Util.getDateObject(this.task_.date, this.endTime_);
+                this.editTask_.endTime = DateUtil.getDateObject(this.task_.date, this.endTime_);
                 //終了時間が入っていたら停止する
                 this.editTask_.isDoing = false;
             }else{
@@ -101,10 +102,10 @@ export default class RepeatEdit extends Vue {
         this.editTask_ = this.task_.copy();
 
         if (this.task_.startTime!=null) {
-            this.startTime_ = Util.get4digitTime(this.task_.startTime);
+            this.startTime_ = DateUtil.get4digitTime(this.task_.startTime);
         }
         if (this.task_.endTime!=null) {
-            this.endTime_ = Util.get4digitTime(this.task_.endTime);
+            this.endTime_ = DateUtil.get4digitTime(this.task_.endTime);
         }
 
         if (this.task_.estimateTime!=null) {
