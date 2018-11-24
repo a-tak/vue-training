@@ -27,9 +27,6 @@ export default new Vuex.Store({
       //todo deleteTaskByIndexと同じロジック。他のmutation呼び出せないか?
       state.taskCtrl.tasks.splice(index,1);
     },
-    deleteTaskByIndex(state, index: number) {
-      state.taskCtrl.tasks.splice(index,1);
-    },
     setTaskCtrl(state, taskCtrl:TaskController) {
       state.taskCtrl = taskCtrl;
     },

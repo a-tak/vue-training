@@ -59,7 +59,7 @@
                     v-on:clickStartButtomEvent="startTask"
                     v-on:clickStopButtomEvent="stopTask"
                     v-on:endEditEvent="endEditTask"
-                    v-on:clickDeleteButtomEvent="deleteTaskByIndex"
+                    v-on:clickDeleteButtomEvent="deleteTask"
                     v-on:changeTaskDateChangeEvent="changeTaskDate"
                 >
                 </TaskRow>
@@ -160,8 +160,9 @@ export default class TaskListMain extends Vue {
         );
     }
 
-    deleteTaskByIndex(index: number) : void {
-        this.$store.commit("deleteTaskByIndex",index);
+    deleteTask(task: Task) : void {
+        this.$store.commit("deleteTask",task);
+        console.log(`${task.title} ${this.$store.getters.taskCtrl.tasks}`);
         this.save();
     }
 
