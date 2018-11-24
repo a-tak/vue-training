@@ -5,8 +5,14 @@
                 <v-flex display-4 ma-5>
                     Taskclear
                 </v-flex>
-                <v-flex>
+                <v-flex v-if="!loading_">
                     <v-btn @click="googleLogin">Googleアカウントでログイン</v-btn>
+                </v-flex>
+                <v-flex v-if="loading_">
+                    <v-progress-circular
+                        indeterminate
+                        color="primary"
+                    ></v-progress-circular>
                 </v-flex>
                 <v-flex ma-5>
                     <v-card>
@@ -25,16 +31,27 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 import firebase from "firebase";
 
 @Component
 export default class Login extends Vue {
     
+    @Prop() loading_! : boolean;
+
     googleLogin() : void {
         firebase
             .auth()
-            .signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+            .signInWithRedirect(new firebase.auth.GoogleAuthProvider())
+            .then(():void => {
+            })
+            .catch(():void => {
+            });
     }
+
+    created() {
+        console.log(`created loading state = ${this.loading_}`);
+    }
+
 }
 </script>

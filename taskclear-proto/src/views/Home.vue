@@ -1,6 +1,6 @@
 <template>
   <div id="Home">
-    <Login v-if="!isLogin"></Login>
+    <Login v-if="!isLogin" :loading_="loading_"></Login>
     <TaskListMain v-if="isLogin"></TaskListMain>
   </div>
 </template>
@@ -18,12 +18,14 @@ import firebase from "firebase"
   },
 })
 export default class Home extends Vue {
-    isLogin: boolean = false;
+  isLogin: boolean = false;
   userData: firebase.User | null = null;
+  loading_: boolean = true;
 
   created () : void {
     firebase.auth().onAuthStateChanged(user => {
     console.log(user);
+    this.loading_ = false;
     if (user) {
       this.isLogin = true;
       this.$store.commit("setUser",user);
