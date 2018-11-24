@@ -9,4 +9,5 @@ export default interface ITask {
     endTime: firestore.Timestamp | null;
     actualTime: number;
     estimateTime: number;
+    repeatId: string;
 }

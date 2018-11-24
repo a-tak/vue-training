@@ -10,6 +10,7 @@ export default class Task {
         this.startTime_ = null;
         this.endTime_ = null;
         this.estimateTime_ = 0;
+        this.repeatId_ = "";
     }
 
     private id_: string;
@@ -32,6 +33,15 @@ export default class Task {
     set startTime(value: Date | null) { this.startTime_ = value }
     get endTime(): Date | null { return this.endTime_ }
     set endTime(value: Date | null) { this.endTime_ = value }
+
+    private repeatId_ : string;
+    public get repeatId() :  string {
+        return this.repeatId_;
+    }
+    public set repeatId(value : string) {
+        this.repeatId_ = value;
+    }
+
     /**
      * 見積時間(分)
      */
@@ -60,6 +70,7 @@ export default class Task {
         let estimate: number = this.estimateTime - this.actualTime;
         if (estimate < 0) estimate = 0;
         newTask.estimateTime = estimate;
+        newTask.repeatId = "";
 
         return newTask;
     }
@@ -77,6 +88,7 @@ export default class Task {
         newTask.startTime = this.startTime_;
         newTask.endTime = this.endTime_;
         newTask.estimateTime = this.estimateTime_;
+        newTask.repeatId = this.repeatId_;
 
         return newTask;
 

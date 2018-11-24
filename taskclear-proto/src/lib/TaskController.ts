@@ -25,6 +25,7 @@ export default class TaskController {
                 endTime: null,
                 estimateTime: task.estimateTime,
                 actualTime: task.actualTime,
+                repeatId: task.repeatId,
             }
             if (task.startTime!=null) { literal.startTime = firestore.Timestamp.fromDate(task.startTime)};
             if (task.endTime!=null) { literal.endTime = firestore.Timestamp.fromDate(task.endTime)};
@@ -62,6 +63,7 @@ export default class TaskController {
             }else {
                 task.endTime = null;
             }
+            task.repeatId = fsobj.repeatId;
             this.tasks_.push(task);
         }
     }

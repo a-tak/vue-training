@@ -54,7 +54,7 @@
                             </v-btn>
                         </v-flex>
                         <v-flex xs4 sm2 md1 class="text-xs-right">
-                            <v-btn icon ripple @click.stop="deleteTask(index_)">
+                            <v-btn icon ripple @click.stop="deleteTask(task_)">
                                 <v-icon color="grey darken-1">delete</v-icon>
                             </v-btn>
                         </v-flex>
@@ -113,7 +113,7 @@ export default class TaskRow extends Vue {
     stopTask(task: Task): void{}
 
     @Emit("clickDeleteButtomEvent")
-    deleteTask(index: number): void{}
+    deleteTask(task: Task): void{}
 
     @Emit('endEditEvent')
     endEdit(task: Task, index: number): void {}

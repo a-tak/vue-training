@@ -50,27 +50,6 @@
                             <v-date-picker v-model="dateFrom" @input="menufrom_ = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
                             </v-menu>
                         </v-flex>
-                        <v-flex>
-                            <v-menu
-                                :close-on-content-click="false"
-                                v-model="menuto_"
-                                :nudge-right="40"
-                                lazy
-                                transition="scale-transition"
-                                offset-y
-                                full-width
-                                min-width="290px"
-                            >
-                            <v-text-field
-                                slot="activator"
-                                v-model="dateTo"
-                                label="終了日"
-                                prepend-icon="event"
-                                readonly
-                            ></v-text-field>
-                            <v-date-picker v-model="dateTo" @input="menuto_ = false" locale="jp" :day-format="date => new Date(date).getDate()"></v-date-picker>
-                            </v-menu>
-                        </v-flex>
                     </v-layout>
                 </v-flex>
             </v-layout>
@@ -91,15 +70,19 @@ import { Component, Vue, Prop, Emit } from 'vue-property-decorator';
 import Task from '../lib/Task';
 import DateUtil from '../util/DateUtil';
 import TaskController from '../lib/TaskController';
+import Repeat from '../lib/Repeat';
+import FirebaseUtil from '../util/FirebaseUtil';
 
 @Component
 export default class RepeatEdit extends Vue {
 
     private menufrom_: boolean = false;
     private menuto_: boolean = false;
-    private selectedDay_: number[] = [];
+    private selectedDay_: string[] = [];
     private from_: Date = new Date();
-    private to_: Date = new Date();
+    private to_: Date | null = new Date();
+    private repeat_ : Repeat = new Repeat();
+    private oldRepeat_ : Repeat | null = null;
 
     get dateFrom() : string {
         return DateUtil.getDateString(this.from_);
@@ -108,38 +91,45 @@ export default class RepeatEdit extends Vue {
         this.from_ = new Date(value);
     }
     
-    get dateTo() : string {
-        return DateUtil.getDateString(this.to_);
-    }
-    set dateTo(value: string) {
-        this.to_ = new Date(value);
-    }
-
     //!はundefinedやnullにならないことを示すもの
     @Prop() task_!: Task;
 
-    private backupedTask_: Task;
-    
     @Emit('endRepeatEditEvent')
     endEdit(task: Task): void {}
 
-    constructor () {
-        super();
-        this.backupedTask_ = this.task_.copy();
-    }
-
     save(): void {
+        this.repeat_.from = this.from_;
+        this.repeat_.day = this.selectedDay_;
+        FirebaseUtil.saveRepeat(this.$store.getters.user.uid, this.repeat_, this.oldRepeat_);
+        this.task_.repeatId = this.repeat_.id;
+        console.log(`new repeat id = ${this.task_.repeatId}`);
+
         //編集終了イベント発生
         this.endEdit(this.task_);
     }
     
     cancel(): void{
-        this.endEdit(this.backupedTask_);
+        this.endEdit(this.task_);
     }
 
 
     created(): void {
-        this.backupedTask_ = this.task_.copy();
+        let self: RepeatEdit = this;
+        if (this.task_.repeatId === "") {
+            this.repeat_ = new Repeat;
+            this.repeat_.title = this.task_.title;
+            this.oldRepeat_ = null;
+        }else{
+            //リピートが設定されているタスクであればリピート設定を読み込み
+            FirebaseUtil.loadRepeat(this.$store.getters.user.uid, this.task_.repeatId).then((repeat:Repeat):void => {
+                self.oldRepeat_ = repeat;
+                self.repeat_ = repeat.copyNew();
+                
+                self.selectedDay_ = self.repeat_.day;
+                self.from_ = self.repeat_.from;
+            });
+        }
+
     }
 
     //算出プロパティーでオブジェクトを返すと属性を展開してくれる
