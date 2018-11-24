@@ -1,9 +1,23 @@
 <template>
     <div id="home">
         <v-container>
-            <v-layout align-center justify-center row fill-height>
+            <v-layout align-center justify-center column fill-height>
+                <v-flex display-4 ma-5>
+                    Taskclear
+                </v-flex>
                 <v-flex>
                     <v-btn @click="googleLogin">Googleアカウントでログイン</v-btn>
+                </v-flex>
+                <v-flex ma-5>
+                    <v-card>
+                        <v-card-title primary-title>
+                            ご注意
+                        </v-card-title>
+                        <v-card-text class="text-md-left">
+                            <span>データを消す場合がありますのであくまでお試しの利用に限ってください</span><br>
+                            <span>メールや登録したデータは管理者は見えてしまいますので、ほんとあくまでお試しで</span>
+                        </v-card-text>
+                    </v-card>
                 </v-flex>
             </v-layout>
         </v-container>
