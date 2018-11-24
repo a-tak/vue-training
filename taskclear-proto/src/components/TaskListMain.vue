@@ -103,7 +103,7 @@ import fb from "../util/FirebaseUtil";
 import uuid from 'uuid';
 import Task from '../lib/Task';
 import TaskController from '../lib/TaskController';
-import { truncate } from 'fs';
+import FirebaseUtil from '../util/FirebaseUtil';
 
 @Component({
   components: {
@@ -163,7 +163,7 @@ export default class TaskListMain extends Vue {
     deleteTask(task: Task) : void {
         this.$store.commit("deleteTask",task);
         console.log(`${task.title} ${this.$store.getters.taskCtrl.tasks}`);
-        this.save();
+        FirebaseUtil.deleteTask(this.$store.getters.user.uid, task);
     }
 
     startTask(task: Task) : void {
