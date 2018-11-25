@@ -3,15 +3,13 @@ import firebase, { firestore } from "firebase"
 import TaskController from '../lib/TaskController';
 import Task from '@/lib/Task';
 import Repeat from '@/lib/Repeat';
+import ITask from '@/ITask';
 
 export default class FirebaseUtil {
     static saveTasks(uid: string, date: Date, taskctrl: TaskController) : void {
-        // 一旦時間は0:00でセット。セクションを取り入れるときはここの時間をセクションの時間に変更する
-        const d = new Date(date.getFullYear(),date.getMonth(),date.getDate(),0,0,0,0);
         //todo ここもbatch書き込みが必要
-        for (const task of taskctrl.createFirestoreLiteral()) {
-            firebase.firestore().collection("users").doc(uid)
-            .collection("tasks").doc(task.id).set(task);
+        for (const task of taskctrl.tasks) {
+            this.addTask(uid, date, task);
         }
     }
 
@@ -66,6 +64,11 @@ export default class FirebaseUtil {
 
     }
 
+    public static async addTask(uid: string, date: Date, task: Task) : Promise<void> {
+        firebase.firestore().collection("users").doc(uid)
+        .collection("tasks").doc(task.id).set(this.getTaskLiteral(task));
+    }
+
     private static setTask(data: firestore.DocumentData) : Task {
         let task = new Task(data.date.toDate(), data.title);
         task.id = data.id;
@@ -77,6 +80,84 @@ export default class FirebaseUtil {
         return task;
     }
 
+    /**
+     * 指定したRepeat IDのタスクを削除する
+     * @param uid 
+     * @param repeatId 
+     * @param dateFrom 
+     */
+    static async deleteRepeatTaskById(uid: string, repeatId: string, dateFrom: Date) : Promise<void> {
+
+        let batch: firestore.WriteBatch = firestore().batch();
+
+        try {
+            const snapshot = await firebase.firestore().collection("users").doc(uid)
+            .collection("tasks")
+            .where("date",">=", firestore.Timestamp.fromDate(dateFrom))
+            .where("repeatId","==",repeatId)
+            .get()
+            snapshot.forEach((doc:firestore.QueryDocumentSnapshot) : void => {
+                console.log(`ここすらきてない?`);
+                if (doc !== undefined) {
+                    //念のために開始していないものだけを削除
+                    console.log(`ここきてる?`);
+                    if (doc.data().startTime == null) {
+                        console.log(`delete doc = ${doc.data().id}`);
+                        batch.delete(doc.ref);
+                    }
+                } else {
+                    console.log("delete rpeat task doc undefined?");
+                }
+            });
+        } catch(e) {
+            console.error(`削除エラー repeatId=${repeatId}`,e);
+        }
+
+        batch.commit()
+        .then(() => {
+            console.log(`success write repeat id = ${repeatId}`);
+        })
+        .catch(error => {
+            console.error(`Write repeat error! repeat id = ${repeatId}`,error);
+        });
+
+
+    }
+
+    /**
+     * Firestore保存用にオブジェクトリテラルを作成する
+     * @param task 
+     */
+    private static getTaskLiteral(task: Task): ITask {
+        let literal: ITask = {
+            id: task.id,
+            date: firestore.Timestamp.fromDate(task.date),
+            title: task.title,
+            isDoing: task.isDoing,
+            startTime: null,
+            endTime: null,
+            estimateTime: task.estimateTime,
+            actualTime: task.actualTime,
+            repeatId: task.repeatId,
+        }
+        if (task.startTime!=null) {
+            literal.startTime = firestore.Timestamp.fromDate(task.startTime);
+        }else{
+            literal.startTime = null;
+        }
+        if (task.endTime!=null) {
+            literal.endTime = firestore.Timestamp.fromDate(task.endTime);
+        }else{
+            literal.endTime = null;
+        }
+
+        return literal;
+    }
+
+    /**
+     * undefinedの場合は空文字を返す マイグレーション用
+     * @param value 
+     */
     private static toString(value: string | undefined) : string {
         if (value === undefined) {
             //ここにひっかかるということはキー名を間違っているか、古いデータで項目がない
@@ -95,12 +176,35 @@ export default class FirebaseUtil {
         }
     }
 
-    static saveRepeat(uid: string, repeat: Repeat, oldRepeat: Repeat | null) : void {
+    private static toNumber(value: string | undefined) : number {
+        if (value === undefined) {
+            //ここにひっかかるということはキー名を間違っているか、古いデータで項目がない
+            console.log("toString undefined?");
+            return 0;
+        }else{
+            return parseInt(value);
+        }
+    }
+
+    /**
+     * リピートを保存する
+     * リピートは更新はせずに毎回削除&追加の動作
+     * 新しいリピート設定にnullを指定すると古いリピートの削除のみ行われ新しいリピートが作られない。結果リピート設定の削除になる。
+     * @param uid 
+     * @param repeat 新しいリピート設定
+     * @param oldRepeat 古いリピート設定
+     */
+    static saveRepeat(uid: string, repeat: Repeat | null, oldRepeat: Repeat | null) : void {
         let batch: firestore.WriteBatch = firestore().batch();
-        const newRef: firestore.DocumentReference = firebase.firestore()
-            .collection("users").doc(uid)
-            .collection("repeats").doc(repeat.id);
-        batch.set(newRef, this.getRepeatLiteral(repeat));
+
+        let newId: string = "Non New Rpeat";
+        if (repeat !== null ) {
+            newId = repeat.id;
+            const newRef: firestore.DocumentReference = firebase.firestore()
+                .collection("users").doc(uid)
+                .collection("repeats").doc(repeat.id);
+            batch.set(newRef, this.getRepeatLiteral(repeat));
+        }
 
         let oldId: string = "Non Old Repeat";
         if (oldRepeat !== null) {
@@ -113,15 +217,21 @@ export default class FirebaseUtil {
 
         batch.commit()
             .then(() => {
-                console.log(`success write repeat id = ${repeat.id} delete repeat id = ${oldId}`);
+                console.log(`success write repeat id = ${newId} delete repeat id = ${oldId}`);
             })
             .catch(error => {
-                console.error(`Write repeat error! repeat id = ${repeat.id} delete repeat id = ${oldId}`,error);
+                console.error(`Write repeat error! repeat id = ${newId} delete repeat id = ${oldId}`,error);
             }
         );
 
     }
 
+    /**
+     * 指定されたIDのリピート情報を取得して返す
+     * 該当のIDのリピート情報が存在しない場合はidを空にしたオブジェクトを返す
+     * @param uid 
+     * @param repeatId 
+     */
     static async loadRepeat(uid: string, repeatId: string) : Promise<Repeat> {
         const doc = await firebase
             .firestore()
@@ -133,6 +243,21 @@ export default class FirebaseUtil {
 
         let repeat: Repeat = new Repeat()
         let data: firestore.DocumentData | undefined = doc.data();
+        try {
+            repeat = this.setRepeat(data);
+        } catch (error) {
+            console.error(`load repeat error repeat id=${repeatId}`,error);
+        }
+        return repeat;
+    }
+
+    /**
+     * 渡されたFirestoreの情報をRepeatオブジェクトに入れて返す
+     * 注意 Firestoreから情報が取得できていない場合は、idが空のオブジェクトを返す
+     * @param data 
+     */
+    private static setRepeat(data: firestore.DocumentData | undefined) : Repeat {
+        let repeat: Repeat = new Repeat()
         if (data !== undefined) {
             repeat.id = this.toString(data.id);
             repeat.title = this.toString(data.title);
@@ -141,16 +266,40 @@ export default class FirebaseUtil {
                 repeat.from = fromDate;
             }else{
                 //repeatでfromがない場合はあり得ない
-                throw new Error(`Repeat from undefined error repeatId=${repeatId}`);
+                throw new Error(`Repeat from undefined error repeatId=${data.id}`);
             }
             repeat.day = data.day;
-
+            repeat.estimateTime = this.toNumber(data.estimateTime);
         } else {
-            //存在しないrepeatIdが飛んでくるのはおかしい
-            throw new Error(`load Repeat doc undefined? repeatId=${repeatId}`);
+            //仕様上存在しないrepeatIdが来ることもあるのでエラーとしないが、それを検知して処理するために空のidのRepeatを返す
+            repeat.id ="";
         }
-
         return repeat;
+    }
+
+    static async loadRepeatByDateFrom(uid: string, dateFrom: Date) : Promise<Repeat[]> {
+
+        let repeats: Repeat[] = [];
+
+        dateFrom.setHours(0,0,0,0);
+        const query:firestore.QuerySnapshot = await firebase
+            .firestore()
+            .collection("users")
+            .doc(uid)
+            .collection("repeats")
+            .where("from","<=",firestore.Timestamp.fromDate(dateFrom))
+            .get();
+
+            query.forEach((doc:firestore.QueryDocumentSnapshot) : void => {
+                if (doc !== undefined) {
+                    const data: firebase.firestore.DocumentData | undefined = doc.data();
+                    repeats.push(this.setRepeat(data));
+                } else {
+                    console.log("doc undefined?");
+                }
+            });
+    
+        return repeats;
     }
 
     private static getRepeatLiteral(repeat: Repeat): Object {
@@ -158,7 +307,8 @@ export default class FirebaseUtil {
             id: repeat.id,
             title: repeat.title,
             from: repeat.from,
-            day: repeat.day
+            day: repeat.day,
+            estimateTime: repeat.estimateTime,
         };
     }
 }

@@ -2,6 +2,12 @@ import uuid from 'uuid';
 
 export default class Task {
 
+    /**
+     * タスククラスのコンとすトラクタ
+     * idは自動生成する
+     * @param date タスクの日付
+     * @param title タスクのタイトル
+     */
     constructor(date:Date, title: string) {
         this.id_ = uuid();
         this.date_ = date;

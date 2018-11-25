@@ -7,6 +7,7 @@ export default class Repeat {
         this.title_ = "";
         this.from_ = new Date();
         this.day_ = [];
+        this.estimateTime_ = 0;
     }
 
     private id_ : string;
@@ -25,12 +26,24 @@ export default class Repeat {
         this.title_ = value;
     }
 
-    /** リピートの開始日 */
+    private estimateTime_ : number;
+    public get estimateTime() :  number {
+        return this.estimateTime_;
+    }
+    public set estimateTime(value : number) {
+        this.estimateTime_ = value;
+    }
+
+    /**
+     * リピートの開始日
+     * セットされたDateオブジェクトの時分秒は自動的に0に修正する
+     */
     private from_ : Date;
     public get from() :  Date {
         return this.from_;
     }
     public set from(value : Date) {
+        value.setHours(0,0,0,0);
         this.from_ = value;
     }
 
@@ -53,6 +66,7 @@ export default class Repeat {
         newRepeat.title = this.title_;
         newRepeat.day = this.day_;
         newRepeat.from = this.from_;
+        newRepeat.estimateTime = this.estimateTime_;
         return newRepeat;
     }
     

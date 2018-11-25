@@ -50,7 +50,8 @@
                         </v-flex>
                         <v-flex xs4 sm2 md1 class="text-xs-right">
                             <v-btn icon ripple @click.stop="editingRepeat_=!editingRepeat_">
-                                <v-icon color="grey darken-1">repeat</v-icon>
+                                <v-icon v-if="task_.repeatId===''" color="grey darken-1">repeat</v-icon>
+                                <v-icon v-if="task_.repeatId!==''" color="purple">repeat</v-icon>
                             </v-btn>
                         </v-flex>
                         <v-flex xs4 sm2 md1 class="text-xs-right">

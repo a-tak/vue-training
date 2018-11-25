@@ -104,6 +104,8 @@ import uuid from 'uuid';
 import Task from '../lib/Task';
 import TaskController from '../lib/TaskController';
 import FirebaseUtil from '../util/FirebaseUtil';
+import Repeat from '../lib/Repeat';
+import RepeatCreator from '../lib/RepeatCreator';
 
 @Component({
   components: {
@@ -152,13 +154,38 @@ export default class TaskListMain extends Vue {
     }
 
     loadTasks() : void {
-        fb.loadTasks(this.$store.getters.user.uid, this.$store.getters.targetDate)
-        .then(tc => {
-            tc.sort();
-            this.$store.commit("setTaskCtrl", tc);
-            }
-        );
+        
+        let self: TaskListMain = this;
+
+        //当日分のリピートタスクを作る
+        const rc: RepeatCreator = new RepeatCreator(this.$store.getters.user.uid, this.$store.getters.targetDate);
+        rc.creaetRepeat(1)
+        .then(() : void => {
+            //今日のデータを読み込み(同期的に)
+            fb.loadTasks(self.$store.getters.user.uid, self.$store.getters.targetDate)
+            .then((tc: TaskController) : void => {
+                tc.sort();
+                self.$store.commit("setTaskCtrl", tc);
+                }
+            );
+        })
+
+        this.recreateRepeatTask();
     }
+
+    async recreateRepeatTask() : Promise<void> {
+        //非同期で明日以降1週間分のデータを作る
+        let d = new Date(this.$store.getters.targetDate);
+        d.setDate(d.getDate()+1);
+        const rc2: RepeatCreator = new RepeatCreator(this.$store.getters.user.uid, d);
+        rc2.creaetRepeat(6)
+        .then(() : void => {
+            console.log(`repeat task create success`);
+        }).catch((e) : void => {
+            console.error(`repeate task create error! `,e);
+        })
+
+    } 
 
     deleteTask(task: Task) : void {
         this.$store.commit("deleteTask",task);
@@ -206,6 +233,8 @@ export default class TaskListMain extends Vue {
     endEditTask(task: Task, index: number) {
         this.$set(this.tasks, index, task);
         this.save();
+        this.recreateRepeatTask();
+
     }
 
     created() : void {
