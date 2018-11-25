@@ -107,7 +107,8 @@ export default class RepeatEdit extends Vue {
     endEdit(task: Task): void {}
 
     save(): void {
-        if (this.selectedDay_.length > 0) { 
+        if (this.selectedDay_.length > 0) {
+            this.repeat_.title = this.task_.title;
             this.repeat_.from = this.from_;
             this.repeat_.day = this.selectedDay_;
             this.repeat_.estimateTime = this.estimateTime_;
