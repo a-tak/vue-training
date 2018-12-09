@@ -1,6 +1,8 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <button id="click-btn-hoge1234" type="button" @click="clickHandler()">Click! Click!</button>
+    <v-btn v-bind:id="'task-edit-cancelbtn-' + 'test123'" @click.stop="clickHandler">キャンセル</v-btn>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -39,6 +41,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
+
+  private clickHandler(): void {
+    alert('Click!したね! 父さんにもclickされたことないのに!');
+  }
 }
 </script>
 
