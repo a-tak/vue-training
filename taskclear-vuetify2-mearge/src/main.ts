@@ -2,8 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from '@/store/Store'
-import './registerServiceWorker';
-import vuetify from './plugins/vuetify';
+import './registerServiceWorker'
+import vuetify from './plugins/vuetify'
 import firebase from 'firebase'
 import { RouteRecord } from 'vue-router'
 

@@ -1,16 +1,21 @@
 {
-  "name": "taskclear-vuetify2-mearge",
-  "version": "0.1.0",
+  "name": "taskclear",
+  "version": "0.10.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "stay": "vue-cli-service build",
+    "build": "npm version patch && vue-cli-service build",
+    "minor": "npm version minor && vue-cli-service build",
+    "major": "npm version major && vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:e2e": "vue-cli-service test:e2e",
+    "test:unit": "vue-cli-service test:unit",
+    "staging": "vue-cli-service build --mode development"
   },
   "dependencies": {
-    "@types/uuid": "^3.4.5",
     "core-js": "^2.6.5",
+    "firebase": "^6.3.4",
     "register-service-worker": "^1.6.2",
     "uuid": "^3.3.2",
     "vue": "^2.6.10",
@@ -22,6 +27,7 @@
   },
   "devDependencies": {
     "@types/jest": "^23.1.4",
+    "@types/uuid": "^3.4.5",
     "@vue/cli-plugin-babel": "^3.10.0",
     "@vue/cli-plugin-pwa": "^3.10.0",
     "@vue/cli-plugin-typescript": "^3.10.0",
